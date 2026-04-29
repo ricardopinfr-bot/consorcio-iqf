@@ -1,0 +1,19 @@
+{
+  "name": "Consorcio IQ",
+  "short_name": "CIQ",
+  "description": "Inteligencia de lances para consorcio — analise preditiva, Monte Carlo e estrategias S1/S2",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#2563eb",
+  "background_color": "#f7f6f3",
+  "lang": "pt-BR",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "screenshots": [
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "form_factor": "wide" }
+  ]
+}

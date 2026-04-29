@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Consorcio IQ</title>
+<!-- PWA -->
+<link rel="manifest" href="./manifest.json"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Consorcio IQ"/>
+<link rel="apple-touch-icon" href="./icon-192.png"/>
+<meta name="theme-color" content="#2563eb"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#f7f6f3;--sf:#fff;--sf2:#f0efe9;--sf3:#e8e7e0;--bo:rgba(0,0,0,.08);--bm:rgba(0,0,0,.14);--tx:#1a1916;--t2:#6b6a65;--t3:#9b9a94;--blue:#2563eb;--bbg:#eff6ff;--btx:#1d4ed8;--green:#16a34a;--gbg:#f0fdf4;--gtx:#15803d;--amber:#d97706;--abg:#fffbeb;--atx:#b45309;--red:#dc2626;--rbg:#fef2f2;--rtx:#b91c1c;--purple:#7c3aed;--pbg:#f5f3ff;--ptx:#6d28d9;--r:10px;--rs:6px;--sh:0 4px 14px rgba(0,0,0,.1)}
+[data-dark]{--bg:#111110;--sf:#1c1c1a;--sf2:#242422;--sf3:#2e2e2b;--bo:rgba(255,255,255,.08);--bm:rgba(255,255,255,.14);--tx:#f0ede8;--t2:#a09e98;--t3:#6b6a65;--bbg:#1e3a5f;--btx:#93c5fd;--gbg:#14532d;--gtx:#86efac;--abg:#451a03;--atx:#fcd34d;--rbg:#450a0a;--rtx:#fca5a5;--pbg:#2e1065;--ptx:#c4b5fd}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;line-height:1.6}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:50px;background:var(--sf);border-bottom:1px solid var(--bo);position:sticky;top:0;z-index:400}
+.logo{font-size:15px;font-weight:600;letter-spacing:-.3px}.logo span{color:var(--blue)}
+.pill{font-size:11px;color:var(--t3);background:var(--sf2);padding:2px 9px;border-radius:20px}
+.tabs-row{display:flex;align-items:center;padding:0 20px;background:var(--sf);border-bottom:1px solid var(--bo);gap:2px;overflow-x:auto;position:sticky;top:50px;z-index:300}
+.tab-btn{display:flex;align-items:center;gap:6px;padding:10px 14px;font-size:12px;font-weight:500;font-family:inherit;border:none;background:transparent;color:var(--t2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-btn:hover:not(.active){color:var(--tx);background:var(--sf2)}
+.tab-name{font-family:inherit;font-size:12px;font-weight:500;border:none;background:transparent;color:inherit;width:110px;outline:none;cursor:text}
+.tab-x{width:14px;height:14px;border-radius:50%;background:transparent;border:none;color:var(--t3);font-size:11px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.tab-x:hover{background:var(--rbg);color:var(--rtx)}
+.tab-add{padding:8px 12px;font-size:12px;border:1px dashed var(--bm);border-radius:var(--rs);background:transparent;color:var(--t3);cursor:pointer;font-family:inherit;margin-left:4px;transition:all .15s}
+.tab-add:hover{border-color:var(--blue);color:var(--blue);background:var(--bbg)}
+.layout{display:grid;grid-template-columns:1fr 390px;min-height:calc(100vh - 98px)}
+.main{padding:18px 22px;overflow-y:auto}
+.sidebar{background:var(--sf);border-left:1px solid var(--bo);padding:16px;overflow-y:auto;position:sticky;top:98px;height:calc(100vh - 98px)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--bm);background:var(--sf);color:var(--tx);transition:all .15s}
+.btn:hover{background:var(--sf2)}.btn-p{background:var(--blue);color:#fff;border-color:var(--blue)}.btn-p:hover{background:var(--btx)}.btn-sm{padding:4px 9px;font-size:11px}
+.card{background:var(--sf);border:1px solid var(--bo);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:600;margin-bottom:3px}
+.card-desc{font-size:11px;color:var(--t2);margin-bottom:12px;line-height:1.5}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:9px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:9px}
+.g5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-bottom:9px}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fl{font-size:11px;font-weight:500;color:var(--t2);display:flex;align-items:center;gap:4px}
+.fi{padding:6px 9px;border:1px solid var(--bm);border-radius:var(--rs);font-family:'DM Mono',monospace;font-size:12px;background:var(--bg);color:var(--tx);outline:none;transition:border-color .15s;width:100%}
+.fi:focus{border-color:var(--blue)}.fi::placeholder{color:var(--t3)}
+.hb{width:15px;height:15px;border-radius:50%;background:var(--sf2);border:1px solid var(--bm);color:var(--t2);font-size:9px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;transition:all .15s}
+.hb:hover{background:var(--bbg);color:var(--btx);border-color:var(--btx)}
+#tip{position:fixed;z-index:9999;background:var(--sf);border:1px solid var(--bm);border-radius:var(--r);padding:12px 30px 12px 14px;max-width:285px;box-shadow:var(--sh);font-size:12px;display:none}
+#tip.on{display:block}
+.tip-t{font-size:13px;font-weight:600;margin-bottom:5px;color:var(--tx)}
+.tip-b{color:var(--t2);line-height:1.5;margin-bottom:7px}
+.tip-h{font-size:10px;color:var(--t3);border-top:1px solid var(--bo);padding-top:5px}
+.tip-x{position:absolute;top:7px;right:10px;cursor:pointer;background:none;border:none;color:var(--t3);font-size:14px;font-family:inherit}
+.mg2{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+.mg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px}
+.mc{background:var(--sf2);border-radius:var(--rs);padding:9px 11px}
+.mc-l{font-size:9px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;display:flex;align-items:center;gap:3px}
+.mc-v{font-size:17px;font-weight:600;color:var(--tx);font-family:'DM Mono',monospace;letter-spacing:-.5px}
+.mc-s{font-size:10px;color:var(--t3);margin-top:1px}
+.pb{height:5px;border-radius:3px;background:rgba(0,0,0,.08);margin-top:5px;overflow:hidden}
+.pf{height:100%;border-radius:3px;transition:width .5s}
+.bd{display:inline-block;font-size:10px;font-weight:500;padding:2px 6px;border-radius:20px}
+.bb{background:var(--bbg);color:var(--btx)}.bg2{background:var(--gbg);color:var(--gtx)}.ba{background:var(--abg);color:var(--atx)}.br2{background:var(--rbg);color:var(--rtx)}
+.ac{background:var(--sf);border:1px solid var(--bo);border-radius:var(--r);margin-bottom:9px;overflow:hidden;transition:box-shadow .15s}
+.ac:hover{box-shadow:var(--sh)}
+.ac-hdr{display:flex;align-items:center;gap:9px;padding:11px 14px;cursor:pointer;user-select:none}
+.ac-num{width:26px;height:26px;border-radius:50%;background:var(--bbg);color:var(--btx);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ac-ta{flex:1}.ac-ttl{font-size:13px;font-weight:500}.ac-sb{font-size:10px;color:var(--t3);margin-top:1px}
+.ac-tog{color:var(--t3);font-size:15px;transition:transform .2s;flex-shrink:0}
+.ac.open .ac-tog{transform:rotate(180deg)}
+.ac-body{display:none;padding:0 14px 14px;border-top:1px solid var(--bo)}
+.ac.open .ac-body{display:block}
+.fsub{margin-top:10px;padding-top:10px;border-top:1px dashed var(--bo)}
+.fsub-t{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;padding:6px 9px;border-bottom:2px solid var(--bm);text-align:left;white-space:nowrap}
+.tbl td{padding:8px 9px;border-bottom:1px solid var(--bo);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}.tbl tr:hover td{background:var(--sf2)}
+.row-min td{background:var(--gbg)!important}.row-max td{background:var(--bbg)!important}
+.lt{width:100%;border-collapse:collapse;font-size:12px}
+.lt th{font-size:10px;font-weight:600;color:var(--t3);text-align:left;padding:3px 5px;text-transform:uppercase;border-bottom:1px solid var(--bo)}
+.lt td{padding:4px 5px;border-bottom:1px solid var(--bo)}.lt tr:last-child td{border-bottom:none}.lt tr:nth-child(even) td{background:var(--bg)}
+.fee-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.fee-tbl th{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;padding:6px 8px;border-bottom:2px solid var(--bm);border-top:1px solid var(--bm);border-left:1px solid var(--bo);text-align:center;background:var(--sf2)}
+.fee-tbl td{padding:8px 6px;border-bottom:1px solid var(--bo);border-left:1px solid var(--bo);vertical-align:middle;text-align:center}
+.fee-tbl tr:last-child td{border-bottom:none}
+.fi-sm{padding:4px 5px;border:1px solid var(--bm);border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;background:var(--bg);color:var(--tx);outline:none;text-align:right;min-width:55px;max-width:90px}
+.fi-sm:focus{border-color:var(--blue)}
+.brec{background:var(--sf2);border:1px solid var(--bo);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.brec-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--btx);margin-bottom:8px}
+.verd{border-radius:var(--rs);padding:10px 12px;margin-top:10px;font-size:11px;line-height:1.6}
+.vg{background:var(--gbg);border:1px solid rgba(22,163,74,.2);color:var(--gtx)}
+.va{background:var(--abg);border:1px solid rgba(217,119,6,.2);color:var(--atx)}
+.mc-items{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.mc-it{display:flex;align-items:center;justify-content:space-between;padding:7px 9px;border-radius:var(--rs);background:var(--sf2)}
+.ch-wrap{position:relative;width:100%;height:160px;margin-bottom:10px}
+.dv{height:1px;background:var(--bo);margin:14px 0}
+.note{font-size:10px;color:var(--t3);line-height:1.4;margin-top:2px}
+.sec-t{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t3)}
+.ht{width:100%;font-size:11px;border-collapse:collapse}
+.ht th{font-size:10px;color:var(--t3);font-weight:500;padding:3px 4px;text-align:left;border-bottom:1px solid var(--bo)}
+.ht td{padding:4px;border-bottom:1px solid var(--bo);font-family:'DM Mono',monospace}
+.ht tr:last-child td{border-bottom:none}
+.acc-ok td:first-child{border-left:3px solid var(--green)}.acc-no td:first-child{border-left:3px solid var(--amber)}
+.t-up{color:var(--green)}.t-dn{color:var(--red)}.t-flat{color:var(--amber)}
+.conc-box{background:var(--sf2);border-radius:var(--r);padding:14px;border:1px solid var(--bo);margin-bottom:12px}
+.conc-title{font-size:13px;font-weight:600;margin-bottom:10px}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bm);border-radius:2px}
+#save-btn{transition:all .2s}#save-btn:hover{background:var(--gbg);border-color:var(--green)}
+#save-status{transition:all .3s}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto;border-left:none;border-top:1px solid var(--bo)}.g4{grid-template-columns:1fr 1fr}.g5{grid-template-columns:1fr 1fr}}
+/* SYNC */
+.sync-bar{display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;padding:3px 8px;border-radius:var(--rs);border:1px solid var(--bm);background:var(--sf);transition:all .15s}
+.sync-bar:hover{background:var(--sf2)}
+.sync-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background .3s}
+.sync-dot.ok{background:#16a34a}.sync-dot.syncing{background:#d97706;animation:sdpulse .8s infinite}
+.sync-dot.err{background:#dc2626}.sync-dot.off{background:#9b9a94}
+@keyframes sdpulse{0%,100%{opacity:1}50%{opacity:.3}}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:flex;align-items:center;justify-content:center}
+.modal-box{background:var(--sf);border-radius:var(--r);padding:24px;width:500px;max-width:94vw;box-shadow:var(--sh);max-height:90vh;overflow-y:auto}
+.modal-box h2{font-size:15px;font-weight:600;margin-bottom:6px}
+.cfg-area{font-size:11px;font-family:'DM Mono',monospace;width:100%;height:130px;border:1px solid var(--bm);border-radius:var(--rs);padding:8px;background:var(--bg);color:var(--tx);outline:none;resize:vertical}
+.cfg-area:focus{border-color:var(--blue)}
+</style>
+</head>
+<body>
+<div id="tip"><button class="tip-x" onclick="CT()">x</button><div class="tip-t" id="tp-t"></div><div class="tip-b" id="tp-b"></div><div class="tip-h" id="tp-h"></div></div>
+
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo">Consorcio<span>IQ</span></div>
+    <div class="pill" id="asm-badge">0 assembleias</div>
+    <div id="save-status" style="font-size:11px;color:var(--t3);display:flex;align-items:center;gap:4px"><span id="save-dot" style="width:6px;height:6px;border-radius:50%;background:var(--t3);display:inline-block"></span><span id="save-txt">salvo</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:7px">
+    <button class="btn btn-sm" id="save-btn" onclick="manualSave()" style="border-color:var(--green);color:var(--gtx)" title="Salvar agora (Ctrl+S)">&#x1F4BE; Salvar</button>
+    <button class="btn btn-sm" onclick="importData()">Importar</button>
+    <button class="btn btn-sm" onclick="exportData()">Exportar</button>
+    <button class="btn btn-sm btn-p" onclick="addAssembly()">+ Assembleia</button>
+    <button class="btn btn-sm" onclick="toggleTheme()">&#9680; Tema</button>
+    <button class="btn btn-sm" id="install-btn" onclick="installPWA()" style="display:none;background:var(--pbg);color:var(--ptx);border-color:var(--ptx)" title="Instalar app">&#x2B07; Instalar</button>
+    <div class="sync-bar" onclick="openSyncModal()" title="Sincronizacao">
+      <span class="sync-dot off" id="sync-dot"></span>
+      <span id="sync-txt">Offline</span>
+      <span style="color:var(--t3);font-size:10px">&#9881;</span>
+    </div>
+  </div>
+</header>
+
+<div class="tabs-row" id="tabs-row"></div>
+
+<div class="layout">
+  <main class="main" id="main-left"><div id="main-content"></div></main>
+  <aside class="sidebar" id="sidebar-content"></aside>
+</div>
+
+<input type="file" id="file-input" accept=".json" style="display:none" onchange="handleImport(event)"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ============================================================
+// TOOLTIP DEFINITIONS
+// ============================================================
+var TIPS={operadora:{t:'Operadora',b:'Nome da administradora registrada no Banco Central responsavel pelo grupo.',h:'Contrato do consorcio'},grupo:{t:'Numero do grupo',b:'Identificador numerico do grupo dentro da administradora.',h:'Contrato do consorcio'},cota:{t:'Numero da cota',b:'Numero de identificacao da sua cota dentro do grupo. Usado para acompanhamento nas assembleias.',h:'Contrato do consorcio ou boleto'},participantes:{t:'Numero de participantes',b:'Total de cotas (ativas + inativas). Impacta o Indice de Pressao: mais participantes aptos = mais competicao de lances.',h:'Mapa de cotas da ultima assembleia'},valor_credito:{t:'Valor do credito',b:'Valor total do bem/credito contratado. Base para converter % de lance em R$. Ex: 60% sobre R$ 200.000,00 = R$ 120.000,00.',h:'Contrato do consorcio'},prazo_total:{t:'Prazo total',b:'Numero total de meses do grupo. Usado para calcular prazo restante e parcela mensal.',h:'Contrato do consorcio'},prazo_decorrido:{t:'Prazo decorrido',b:'Meses ja transcorridos. Prazo restante = Total - Decorrido.',h:'Equivale ao numero da ultima assembleia'},taxa_admin:{t:'Taxa de administracao',b:'Percentual sobre o credito cobrado pela administradora ao longo do contrato.',h:'Parcela admin = (Taxa% / Prazo) x Credito'},fundo_reserva:{t:'Fundo de reserva',b:'Percentual arrecadado para cobrir inadimplencia. Pode ser devolvido ao final.',h:'Parcela reserva = (FR% / Prazo) x Credito'},seguro:{t:'Seguro',b:'Percentual cobrado para cobrir saldo devedor em caso de morte ou invalidez.',h:'Parcela seguro = (Seg% / Prazo) x Credito'},parcela_reduzida:{t:'% Parcela reduzida',b:'Percentual da parcela cheia que voce efetivamente paga apos contemplacao com lance embutido.',h:'Parcela atual = Parcela cheia x (pred% / 100)'},lance_embutido_pct:{t:'Lance embutido',b:'Percentual do credito que voce cede como parte do lance. Reduz desembolso em caixa mas diminui o credito recebido.',h:'Caixa = Credito x (lance% - embutido%) / 100'},cdi_anual:{t:'CDI anual',b:'Taxa de referencia para renda fixa. Buscada automaticamente via BrasilAPI. Usada para calcular quanto o dinheiro do lance renderia se aplicado em CDB 100% CDI.',h:'Aprox. Selic - 0,10% a.a. Fonte: Banco Central do Brasil'},meses_antecipacao:{t:'Antecipacao esperada',b:'Estimativa de quantos meses voce antecipa a contemplacao dando lance agora vs aguardar sorteio.',h:'Estimativa pessoal. Referencia: prazo restante / 2'},composicao_parcela:{t:'Composicao da parcela',b:'Decomposicao da parcela mensal em Fundo de Aquisicao, Taxa de Administracao, Fundo de Reserva, Seguro e Taxa de Antecipacao.',h:'Total (R$/mes) = Credito x (soma de todos os percentuais) / 100'},mm6:{t:'Media Movel MM6',b:'Media de todos os lances vencedores das ultimas 6 assembleias. Lance acima da MM6 tem maior chance de vencer.',h:'MM6 = soma(lances vencedores ult. 6 asm) / quantidade'},sigma:{t:'Desvio Padrao (sigma)',b:'Dispersao dos lances vencedores. Baixo = grupo estavel. Alto = volatil, requer margem maior.',h:'sigma = raiz(soma(xi - media)^2 / n)'},min_vencedor:{t:'Minimo vencedor',b:'Menor % que ganhou contemplacao nas ultimas 6 assembleias. Piso absoluto historico.',h:'min(lances vencedores ult. 6 asm)'},tendencia:{t:'Tendencia',b:'Compara media da 1a com a 2a metade das assembleias. Positivo = lances subindo.',h:'media(2a metade) - media(1a metade)'},cv:{t:'Coeficiente de Variacao (CV)',b:'CV = sigma/MM6 x 100%. CV < 5% = estavel. CV > 10% = volatil.',h:'CV = (sigma / MM6) x 100%'},ic95:{t:'Intervalo de Confianca 95%',b:'Faixa onde esperamos que 95% dos futuros lances vencedores se concentrem.',h:'IC95 = MM6 +/- 1,96 x sigma'},p75:{t:'Percentil 75 (P75)',b:'75% dos lances historicos estao abaixo deste valor. Ofertar acima do P75 = alta seguranca.',h:'P75: valor que separa 75% menores de 25% maiores'},ewma:{t:'EWMA - Media Ponderada Exponencial',b:'Da mais peso aos lances recentes (lambda=0,3). EWMA > MM6 indica lances subindo recentemente.',h:'EWMA = 0,3 x lance_atual + 0,7 x EWMA_anterior'},ip:{t:'Indice de Pressao (IP)',b:'IP = cotas aptas / cotas ativas. IP > 75% = alta competicao. IP < 60% = baixa pressao.',h:'IP = (aptas / ativas) x 100%'},monte_carlo:{t:'Monte Carlo - 10.000 simulacoes',b:'Executa 10.000 rodadas com competidores virtuais baseados na distribuicao historica e verifica se seu lance seria vencedor.',h:'Probabilidade = rodadas vencidas / 10.000'},estrategia1:{t:'Estrategia 1 - Lance livre puro',b:'Voce desembolsa o percentual total do lance em dinheiro. Credito recebido = valor integral.',h:'Lance R$ = Credito x lance% / 100'},estrategia2:{t:'Estrategia 2 - Lance embutido',b:'Parte do lance vem do proprio credito, reduzindo desembolso em caixa. Credito recebido = credito - embutido.',h:'Caixa = Credito x (lance% - embutido%) / 100'},custo_op:{t:'Custo de oportunidade',b:'Quanto esse dinheiro renderia em CDB 100% CDI pelo periodo antecipado? Se beneficio > rendimento CDB entao vale o lance.',h:'Saldo = Parcelas antecipadas - Rend.CDB'},taxa_acerto:{t:'Taxa de acerto do modelo',b:'Para cada assembleia a partir da 6a, calcula qual seria o lance sugerido usando APENAS dados anteriores e verifica se teria sido suficiente para contemplar.',h:'Acerto: sugestao >= minimo vencedor real da assembleia'},min_real:{t:'Minimo real vencedor',b:'Menor percentual entre todos os lances vencedores (tipo livre) registrados na assembleia avaliada.',h:'min(lances tipo livre registrados na assembleia N)'},lance_sug:{t:'Lance sugerido (retroativo)',b:'Calculado com MM6 + sigma x mult(CV) usando SOMENTE assembleias ANTERIORES a avaliada. Simula o que o modelo teria recomendado na vespera.',h:'MM6 das asm anteriores + sigma x (0,3 + ajuste_CV)'},parcela_cheia_campo:{t:'Valor cheio da parcela',b:'Valor mensal total que voce paga ao consorcio, incluindo todos os componentes. Usado como base para calcular o beneficio da antecipacao.',h:'Pode ser informado diretamente ou calculado automaticamente pela tabela de composicao da parcela abaixo'},prob_sorteio:{t:'Probabilidade de contemplacao por sorteio',b:'Calcula a probabilidade estatistica de ser sorteado em cada assembleia. P(sorteio_asm) = 1 / cotas ativas.',h:'P(acum_N) = 1 - (1 - 1/ativas)^N | Espera_media = ativas assembleias'},sim_table:{t:'Simulacao de lances',b:'Simula cenarios de percentuais de lance para a proxima assembleia, calculando a probabilidade de contemplacao (Monte Carlo 5.000 iter.).',h:'Probabilidade = MC(5000, pct, historico) | Asm. esperadas = 100/probabilidade'},kde:{t:'KDE — Kernel Density Estimation',b:'Estima a moda real dos lances usando kernel gaussiano com bandwidth de Silverman. Captura o valor mais provavel sem assumir distribuicao normal.',h:'h=1.06*s*n^(-0.2) | KDE(x)=sum(K((x-xi)/h))/(n*h) | Moda=argmax KDE'},slope:{t:'Slope — Regressao Linear',b:'Calcula a inclinacao da reta de regressao sobre todos os lances vencedores historicos. Positivo = lances subindo.',h:'slope=(n*sumXY-sumX*sumY)/(n*sumX2-sumX^2) | multSig=0.35+slopeAdj'},conclusao:{t:'Conclusao final',b:'Sintese de todos os indicadores: faixa sugerida de lance (min/max) para S1 e S2, melhor cenario de custo de oportunidade e recomendacao com valores exatos.',h:'Integra MM6, sigma, EWMA, P75, IC95, Monte Carlo e custo de oportunidade'}};
+var tipEl=document.getElementById('tip'),tipOpen=false;
+function ST(e,key){e.stopPropagation();var t=TIPS[key];if(!t)return;document.getElementById('tp-t').textContent=t.t;document.getElementById('tp-b').textContent=t.b;document.getElementById('tp-h').textContent='Como calculado: '+t.h;var r=e.target.getBoundingClientRect(),x=r.right+8,y=r.top-10;if(x+295>window.innerWidth)x=r.left-303;if(y+230>window.innerHeight)y=window.innerHeight-235;tipEl.style.left=Math.max(6,x)+'px';tipEl.style.top=Math.max(6,y)+'px';tipEl.classList.add('on');tipOpen=true;}
+function CT(){tipEl.classList.remove('on');tipOpen=false;}
+document.addEventListener('click',function(e){if(tipOpen&&!tipEl.contains(e.target))CT();});
+function H(k){return '<button class="hb" onclick="ST(event,\''+k+'\')">?</button>';}
+
+// ============================================================
+// FORMAT HELPERS
+// ============================================================
+function brl(v){var n=parseFloat(v)||0;return 'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function p2(v){var n=parseFloat(v)||0;return n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';}
+function p4(v){var n=parseFloat(v)||0;return n.toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4})+'%';}
+function fmtDate(iso){if(!iso)return '—';var p=iso.split('-');if(p.length!==3)return '—';return p[2]+'/'+p[1]+'/'+p[0];}
+function parsePt(s){return parseFloat(String(s||'').replace(/\./g,'').replace(',','.'))||0;}
+function fmtBRL(v){return parseFloat(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtNum4(v){return parseFloat(v||0).toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4});}
+function fmtNum(v){return parseFloat(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+// ============================================================
+// MATH
+// ============================================================
+function mean(a){return a.length?a.reduce(function(s,x){return s+x;},0)/a.length:0;}
+function stdDev(a){if(a.length<2)return 0;var m=mean(a);return Math.sqrt(a.map(function(x){return(x-m)*(x-m);}).reduce(function(s,x){return s+x;},0)/a.length);}
+function minA(a){return a.length?Math.min.apply(null,a):0;}
+function pct75(a){if(!a.length)return 0;var s=a.slice().sort(function(x,y){return x-y;});var i=0.75*(s.length-1);var lo=Math.floor(i),hi=Math.ceil(i);return s[lo]+(s[hi]-s[lo])*(i-lo);}
+function ewmaCalc(a,lam){lam=lam||0.3;if(!a.length)return 0;var e=a[0];for(var i=1;i<a.length;i++)e=lam*a[i]+(1-lam)*e;return e;}
+function kdeBw(a){if(a.length<2)return 1;var n=a.length,s=stdDev(a);var sorted=a.slice().sort(function(x,y){return x-y;});var q1=sorted[Math.floor(n*0.25)],q3=sorted[Math.floor(n*0.75)];var scale=Math.min(s,((q3-q1)/1.34)||s);return 1.06*scale*Math.pow(n,-0.2);}
+function kdeAt(x,data,h){var sum=0;for(var i=0;i<data.length;i++){var u=(x-data[i])/h;sum+=Math.exp(-0.5*u*u)/Math.sqrt(2*Math.PI);}return sum/(data.length*h);}
+function kdeMode(data){if(!data.length)return 0;var h=kdeBw(data);var mn=Math.min.apply(null,data)-h,mx=Math.max.apply(null,data)+h;var bx=mn,by=0;for(var i=0;i<=200;i++){var x=mn+i*(mx-mn)/200,y=kdeAt(x,data,h);if(y>by){by=y;bx=x;}}return bx;}
+function MC_KDE(n,target,ref){if(!ref.length)return 0;var h=kdeBw(ref);var comp=Math.max(3,Math.round(ref.length*1.1/Math.min(6,ref.length)));var wins=0;for(var i=0;i<n;i++){var ok=true;for(var j=0;j<comp;j++){var base=ref[Math.floor(Math.random()*ref.length)];var noise=(Math.random()+Math.random()+Math.random()+Math.random()-2)*h;if((base+noise)>=target){ok=false;break;}}if(ok)wins++;}return wins/n*100;}
+function linearSlope(a){if(a.length<2)return 0;var n=a.length,sx=0,sy=0,sxy=0,sx2=0;for(var i=0;i<n;i++){sx+=i;sy+=a[i];sxy+=i*a[i];sx2+=i*i;}var d=n*sx2-sx*sx;return d!==0?(n*sxy-sx*sy)/d:0;}
+function findMCLance_KDE(tp,ref){if(!ref.length)return 0;var lo=mean(ref)-2*stdDev(ref),hi=mean(ref)+3*stdDev(ref);for(var i=0;i<25;i++){var mid=(lo+hi)/2;if(MC_KDE(1000,mid,ref)/100>tp)hi=mid;else lo=mid;}return(lo+hi)/2;}
+function MC(n,target,ref){if(!ref.length)return 0;var m=mean(ref),s=stdDev(ref)||1;var comp=Math.max(3,Math.round((ref.length/Math.min(6,ref.length))*1.1));var wins=0;for(var i=0;i<n;i++){var ok=true;for(var j=0;j<comp;j++){if(m+(Math.random()-.5)*s*3>=target){ok=false;break;}}if(ok)wins++;}return wins/n*100;}
+function findMCLance(targetProb,ref){if(!ref.length)return 0;var lo=mean(ref)-2*stdDev(ref),hi=mean(ref)+3*stdDev(ref);for(var i=0;i<25;i++){var mid=(lo+hi)/2;if(MC(2000,mid,ref)/100>targetProb)hi=mid;else lo=mid;}return(lo+hi)/2;}
+function probColor(p){return p<65?'var(--rtx)':p<80?'var(--atx)':'var(--gtx)';}
+function getWinners(list){var out=[];for(var i=0;i<list.length;i++){var asm=list[i];for(var j=0;j<asm.lances.length;j++){var l=asm.lances[j];if(l.pct&&l.mod!=='sorteio'){var v=parseFloat(l.pct);if(!isNaN(v))out.push(v);}}}return out;}
+
+// ============================================================
+// PRELOAD DATA — Consorcio 1 (8 assembleias)
+// ============================================================
+var PRELOAD_C1=[
+  {num:1,date:'2025-09-19',lances:[{cota:'320',pct:'48.9237',mod:'livre'},{cota:'499',pct:'46.6200',mod:'livre'}],sorteio:'309',sorteio_canc:'',lance_livre:2,lance_fixo:0,saldo_ini:'',arr_lances:'',entregue:'',saldo_atual:'',ativas:'511',inativas:'1',aptas:'423',nao_aptas:'94',contempladas:'7'},
+  {num:2,date:'2025-10-21',lances:[{cota:'176',pct:'56.4103',mod:'livre'},{cota:'32',pct:'53.2801',mod:'livre'},{cota:'590',pct:'52.7066',mod:'livre'}],sorteio:'478',sorteio_canc:'526',lance_livre:3,lance_fixo:0,saldo_ini:'304492.64',arr_lances:'249862.71',entregue:'460000',saldo_atual:'94355.35',ativas:'511',inativas:'1',aptas:'423',nao_aptas:'94',contempladas:'7'},
+  {num:3,date:'2025-11-24',lances:[{cota:'277',pct:'55.9999',mod:'livre'},{cota:'217',pct:'56.6774',mod:'livre'},{cota:'233',pct:'56.9801',mod:'livre'},{cota:'406',pct:'60.0000',mod:'livre'},{cota:'283',pct:'57.0000',mod:'livre'}],sorteio:'492',sorteio_canc:'432',lance_livre:5,lance_fixo:0,saldo_ini:'383942.11',arr_lances:'458347.95',entregue:'800000',saldo_atual:'42290.06',ativas:'536',inativas:'5',aptas:'494',nao_aptas:'92',contempladas:'13'},
+  {num:4,date:'2025-12-19',lances:[{cota:'141',pct:'61.8904',mod:'livre'},{cota:'437',pct:'60.0000',mod:'livre'},{cota:'574',pct:'60.6838',mod:'livre'},{cota:'252',pct:'58.7508',mod:'livre'}],sorteio:'15',sorteio_canc:'34',lance_livre:4,lance_fixo:0,saldo_ini:'307953.88',arr_lances:'448635.44',entregue:'745000',saldo_atual:'11589.32',ativas:'596',inativas:'11',aptas:'459',nao_aptas:'122',contempladas:'19'},
+  {num:5,date:'2026-01-21',lances:[{cota:'454',pct:'60.0000',mod:'livre'},{cota:'411',pct:'60.2700',mod:'livre'},{cota:'11',pct:'61.1100',mod:'livre'},{cota:'358',pct:'60.6061',mod:'livre'},{cota:'140',pct:'61.2654',mod:'livre'}],sorteio:'459',sorteio_canc:'539',lance_livre:5,lance_fixo:0,saldo_ini:'400704.17',arr_lances:'542403.31',entregue:'895000',saldo_atual:'48107.48',ativas:'578',inativas:'36',aptas:'467',nao_aptas:'112',contempladas:'25'},
+  {num:6,date:'2026-02-24',lances:[{cota:'438',pct:'56.9999',mod:'livre'},{cota:'250',pct:'60.6061',mod:'livre'},{cota:'180',pct:'58.0700',mod:'livre'},{cota:'461',pct:'57.5499',mod:'livre'},{cota:'59',pct:'59.0000',mod:'livre'}],sorteio:'452',sorteio_canc:'388',lance_livre:5,lance_fixo:0,saldo_ini:'412871.97',arr_lances:'610862.10',entregue:'1010000',saldo_atual:'13734.07',ativas:'598',inativas:'38',aptas:'461',nao_aptas:'112',contempladas:'31'},
+  {num:7,date:'2026-03-20',lances:[{cota:'594',pct:'61.0000',mod:'livre'},{cota:'333',pct:'61.0000',mod:'livre'},{cota:'73',pct:'60.0000',mod:'livre'},{cota:'129',pct:'62.8400',mod:'livre'},{cota:'287',pct:'60.3039',mod:'livre'}],sorteio:'456',sorteio_canc:'104',lance_livre:5,lance_fixo:0,saldo_ini:'327154.93',arr_lances:'454706.87',entregue:'745000',saldo_atual:'36861.80',ativas:'596',inativas:'48',aptas:'433',nao_aptas:'119',contempladas:'36'},
+  {num:8,date:'2026-04-22',lances:[{cota:'107',pct:'63.0000',mod:'livre'},{cota:'539',pct:'62.0000',mod:'livre'},{cota:'129',pct:'61.2000',mod:'livre'},{cota:'174',pct:'62.6781',mod:'livre'},{cota:'500',pct:'62.6781',mod:'livre'}],sorteio:'355',sorteio_canc:'365',lance_livre:5,lance_fixo:0,saldo_ini:'378575.39',arr_lances:'529834.24',entregue:'850000',saldo_atual:'58409.63',ativas:'577',inativas:'70',aptas:'423',nao_aptas:'117',contempladas:'41'}
+];
+
+// ============================================================
+// PRELOAD DATA — Consorcio 2 (5 assembleias)
+// ============================================================
+var PRELOAD_C2=[
+  {num:1,date:'2025-12-19',lances:[{cota:'485',pct:'50.0000',mod:'livre'},{cota:'321',pct:'54.7945',mod:'livre'},{cota:'412',pct:'52.0000',mod:'livre'}],sorteio:'579',sorteio_canc:'',lance_livre:3,lance_fixo:0,saldo_ini:'',arr_lances:'',entregue:'',saldo_atual:'',ativas:'',inativas:'',aptas:'',nao_aptas:'',contempladas:'3'},
+  {num:2,date:'2026-01-21',lances:[{cota:'34',pct:'56.2771',mod:'livre'},{cota:'388',pct:'56.4000',mod:'livre'}],sorteio:'590',sorteio_canc:'',lance_livre:2,lance_fixo:0,saldo_ini:'18647046',arr_lances:'15210801',entregue:'270000',saldo_atual:'6857847',ativas:'404',inativas:'9',aptas:'370',nao_aptas:'49',contempladas:'7'},
+  {num:3,date:'2026-02-24',lances:[{cota:'4',pct:'59.2500',mod:'livre'},{cota:'433',pct:'57.8348',mod:'livre'},{cota:'338',pct:'59.8291',mod:'livre'},{cota:'250',pct:'60.8000',mod:'livre'}],sorteio:'522',sorteio_canc:'',lance_livre:1,lance_fixo:4,saldo_ini:'322503',arr_lances:'435777',entregue:'735000',saldo_atual:'23280',ativas:'442',inativas:'11',aptas:'397',nao_aptas:'68',contempladas:'13'},
+  {num:4,date:'2026-03-20',lances:[{cota:'241',pct:'60.2051',mod:'livre'},{cota:'299',pct:'60.0000',mod:'livre'},{cota:'368',pct:'60.0000',mod:'livre'},{cota:'360',pct:'64.8402',mod:'livre'},{cota:'367',pct:'66.2764',mod:'livre'},{cota:'284',pct:'60.0000',mod:'livre'},{cota:'274',pct:'61.0000',mod:'livre'}],sorteio:'456',sorteio_canc:'410/1',lance_livre:1,lance_fixo:7,saldo_ini:'453520',arr_lances:'662672',entregue:'1070000',saldo_atual:'46193',ativas:'482',inativas:'19',aptas:'449',nao_aptas:'92',contempladas:'20'},
+  {num:5,date:'2026-04-22',lances:[{cota:'173',pct:'62.7219',mod:'livre'},{cota:'345',pct:'62.1302',mod:'livre'},{cota:'287',pct:'62.0000',mod:'livre'},{cota:'355',pct:'64.1000',mod:'livre'},{cota:'375',pct:'64.1026',mod:'livre'},{cota:'36',pct:'66.0000',mod:'livre'}],sorteio:'358',sorteio_canc:'335',lance_livre:6,lance_fixo:1,saldo_ini:'349426.04',arr_lances:'550237.65',entregue:'865000',saldo_atual:'34663.69',ativas:'590',inativas:'38',aptas:'467',nao_aptas:'105',contempladas:'27'}
+];
+
+// ============================================================
+// STATE
+// ============================================================
+var STATE={active:0,consortia:[]};
+var chartInst=null;
+
+function newConsortium(idx,name){
+  return{id:idx,name:name||('Consorcio '+(idx+1)),params:{operadora:'',grupo:'',cota:'',participantes:600,credito:200000,prazo:90,decorrido:0,taxaAdmin:8.5976,freserva:2,seguro:0.0445,pred:50,embutido:15,cdi:14.65,antecip:36,parcelaTotal:1388.8},feeEdit:{fundo:0.4618,admin:0.177,reserva:0.0111,seguro:0.0445,antecip:0}};
+}
+function getC(){return STATE.consortia[STATE.active];}
+function getA(){return getC().assemblies;}
+function getP(){return getC().params;}
+function getF(){return getC().feeEdit;}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded',function(){
+  var sv=localStorage.getItem('ciq_v6');
+  if(sv){try{STATE=JSON.parse(sv);}catch(e){STATE={active:0,consortia:[]};}}
+  if(!STATE.consortia||!STATE.consortia.length){
+    STATE.consortia=[
+      {id:0,name:'Consorcio 1',params:{operadora:'PORTO SEGURO',grupo:'417',cota:'263',participantes:600,credito:200000,prazo:90,decorrido:7,taxaAdmin:8.5976,freserva:2,seguro:0.0445,pred:50,embutido:15,cdi:14.65,antecip:24,parcelaTotal:1388.8,mesesAntComputado:83},feeEdit:{fundo:0.4618,admin:0.177,reserva:0.0111,seguro:0.0445,antecip:0},assemblies:JSON.parse(JSON.stringify(PRELOAD_C1))},
+      {id:1,name:'Consorcio 2',params:{operadora:'PORTO SEGURO',grupo:'453',cota:'483',participantes:600,credito:200000,prazo:90,decorrido:7,taxaAdmin:0.1973,freserva:0.0126,seguro:0,pred:50,embutido:15,cdi:14.65,antecip:36,parcelaTotal:1479.2,mesesAntComputado:83},feeEdit:{fundo:0.5297,admin:0.1973,reserva:0.0126,seguro:0,antecip:0},assemblies:JSON.parse(JSON.stringify(PRELOAD_C2))}
+    ];
+    STATE.active=0;
+  }
+  // Migrate old consortia missing fields
+  STATE.consortia.forEach(function(c,_mi){
+    if(!c.name||c.name==='undefined')c.name='Consorcio '+(_mi+1);
+    if(!c.params)c.params={};
+    if(c.params.cota===undefined)c.params.cota='';
+    if(!c.params.parcelaTotal)c.params.parcelaTotal=0;
+    if(!c.feeEdit)c.feeEdit={fundo:0.4618,admin:0.177,reserva:0.0111,seguro:0.0445,antecip:0};
+    if(c.feeEdit.antecip===undefined)c.feeEdit.antecip=0;
+    if(!c.assemblies)c.assemblies=[];
+  });
+  renderTabs();buildMainHTML();updateAll();fetchCDI();
+  document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();manualSave();}});
+  window.addEventListener('beforeunload',function(){try{localStorage.setItem('ciq_v6',JSON.stringify(STATE));}catch(ex){}});
+});
+
+// ============================================================
+// TABS
+// ============================================================
+function renderTabs(){
+  var row=document.getElementById('tabs-row');row.innerHTML='';
+  STATE.consortia.forEach(function(c,i){
+    var btn=document.createElement('div');btn.className='tab-btn'+(STATE.active===i?' active':'');
+    var inp=document.createElement('input');inp.className='tab-name';inp.value=(!c.name||c.name==='undefined')?('Consorcio '+(i+1)):c.name;
+    inp.style.color=STATE.active===i?'var(--blue)':'var(--t2)';
+    inp.addEventListener('click',function(e){e.stopPropagation();});
+    inp.addEventListener('change',function(e){renameTab(i,e.target.value);});
+    var xbtn=document.createElement('button');xbtn.className='tab-x';xbtn.textContent='x';xbtn.title='Remover consorcio';
+    xbtn.addEventListener('click',function(e){e.stopPropagation();removeTab(i);});
+    btn.appendChild(inp);btn.appendChild(xbtn);
+    btn.addEventListener('click',function(){switchTab(i);});
+    row.appendChild(btn);
+  });
+  var addBtn=document.createElement('button');addBtn.className='tab-add';addBtn.textContent='+ Novo consorcio';
+  addBtn.addEventListener('click',addTab);row.appendChild(addBtn);
+}
+function switchTab(i){STATE.active=i;if(chartInst){chartInst.destroy();chartInst=null;}renderTabs();buildMainHTML();updateAll();save();}
+function addTab(){var i=STATE.consortia.length;var c=newConsortium(i);c.assemblies=[];STATE.consortia.push(c);STATE.active=i;renderTabs();buildMainHTML();updateAll();save();}
+function removeTab(i){if(STATE.consortia.length<=1){alert('Deve existir pelo menos 1 consorcio.');return;}if(!confirm('Remover "'+STATE.consortia[i].name+'"?'))return;STATE.consortia.splice(i,1);STATE.consortia.forEach(function(c,j){c.id=j;});if(STATE.active>=STATE.consortia.length)STATE.active=STATE.consortia.length-1;if(chartInst){chartInst.destroy();chartInst=null;}renderTabs();buildMainHTML();updateAll();save();}
+function renameTab(i,name){STATE.consortia[i].name=name||('Consorcio '+(i+1));renderTabs();save();}
+
+// ============================================================
+// MAIN HTML
+// ============================================================
+function buildMainHTML(){
+  var mc=document.getElementById('main-content');
+  mc.innerHTML=[
+    '<div style="background:var(--bbg);border:1px solid rgba(37,99,235,.15);border-radius:var(--r);padding:9px 13px;margin-bottom:14px;font-size:11px;color:var(--btx);display:flex;align-items:flex-start;gap:7px">',
+    '<span style="font-weight:700;font-size:13px">i</span>',
+    'Preencha os parametros, adicione assembleias e veja estrategias e analise em tempo real. Clique em <strong style="margin:0 3px">?</strong> para explicacoes detalhadas.',
+    '</div>',
+    '<div class="card" id="params-card">',
+    '<div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><div class="card-title" style="margin:0">Parametros do consorcio</div></div>',
+    '<div class="card-desc">Dados base para calculo de R$, estrategias e custo de oportunidade.</div>',
+    '<div id="params-fields"></div>',
+    '<div style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--bo)">',
+    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:10px"><span class="sec-t">Composicao da parcela mensal</span>'+H('composicao_parcela')+'</div>',
+    '<div style="overflow-x:auto"><div id="fee-wrap"></div></div>',
+    '</div></div>',
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">',
+    '<span class="sec-t">Historico de assembleias</span>',
+    '<div style="display:flex;gap:5px">',
+    '<button class="btn btn-sm" onclick="collapseAll()">Recolher</button>',
+    '<button class="btn btn-sm" onclick="expandAll()">Expandir</button>',
+    '<button class="btn btn-sm" style="color:var(--rtx);border-color:var(--rtx)" onclick="clearAsm()">Limpar</button>',
+    '</div></div>',
+    '<div id="asm-container"></div>',
+    '<div style="text-align:center;padding:12px 0"><button class="btn btn-p" id="add-asm-btn" onclick="addAssembly()">+ Adicionar assembleia</button>',
+    '<p style="font-size:11px;color:var(--t3);margin-top:6px" id="count-lbl"></p></div>',
+    '<div class="card"><div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><div class="card-title" style="margin:0">Estrategias de Lance — S1 Livre e S2 Embutido</div>'+H('estrategia1')+H('estrategia2')+'</div>',
+    '<div class="card-desc">Comparativo dos 3 cenarios (minimo/balanceado/maximo) para lance livre puro (S1) e lance embutido (S2). Lance embutido reduz o desembolso em caixa usando parte do credito.</div>',
+    '<div id="s1-content"><p style="font-size:12px;color:var(--t3)">Adicione assembleias com lances para calcular.</p></div></div>',
+    '<div class="card"><div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><div class="card-title" style="margin:0">Custo de oportunidade — Lance vs. CDB 100% CDI</div>'+H('custo_op')+'</div>',
+    '<div class="card-desc">Dois cenarios: S1 (desembolso total) e S2 (apenas parcela em caixa). Resposta clara sobre se vale o lance.</div>',
+    '<div id="co-content"><p style="font-size:12px;color:var(--t3)">Configure parametros e adicione assembleias para calcular.</p></div></div>',
+    '<div class="card"><div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><div class="card-title" style="margin:0">Taxa de acerto do modelo — sugestao vs. realidade</div>'+H('taxa_acerto')+'</div>',
+    '<div class="card-desc">A partir da assembleia 6, compara o lance que o modelo teria sugerido (com dados anteriores) vs. o minimo real vencedor.</div>',
+    '<div id="acc-content"><p style="font-size:12px;color:var(--t3)">Disponivel a partir de 6 assembleias.</p></div></div>',
+    '<div class="card"><div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><div class="card-title" style="margin:0">Conclusao final — Sintese estrategica</div>'+H('conclusao')+'</div>',
+    '<div class="card-desc">Valores minimos e maximos sugeridos para S1 e S2, melhor cenario de custo de oportunidade e recomendacao objetiva.</div>',
+    '<div id="conc-content"><p style="font-size:12px;color:var(--t3)">Adicione assembleias para gerar conclusao.</p></div></div>',
+    '<div class="card"><div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><div class="card-title" style="margin:0">Probabilidade de contemplacao por sorteio</div>'+H('prob_sorteio')+'</div>',
+    '<div class="card-desc">Probabilidade estatistica de contemplacao por sorteio em cada assembleia, baseada no tamanho do grupo e historico.</div>',
+    '<div id="sorteio-content"><p style="font-size:12px;color:var(--t3)">Adicione assembleias para calcular.</p></div></div>',
+    '<div class="card"><div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><div class="card-title" style="margin:0">Simulacao de lances — Probabilidade por cenario</div>'+H('sim_table')+'</div>',
+    '<div class="card-desc">Simula diferentes percentuais de lance para a proxima assembleia com base no historico do grupo.</div>',
+    '<div id="sim-content"><p style="font-size:12px;color:var(--t3)">Adicione pelo menos 2 assembleias com lances para simular.</p></div></div>'
+  ].join('');
+  renderParamFields();renderAssemblies();buildFeeTable();
+}
+
+// ============================================================
+// PARAM FIELDS
+// ============================================================
+function renderParamFields(){
+  var p=getP();var el=document.getElementById('params-fields');if(!el)return;
+  el.innerHTML=[
+    '<div class="g5">',
+    fg('Operadora',H('operadora'),'<input class="fi" value="'+esc(p.operadora||'')+'" oninput="sp(\'operadora\',this.value)"/>'),
+    fg('Grupo',H('grupo'),'<input class="fi" value="'+esc(p.grupo||'')+'" oninput="sp(\'grupo\',this.value)"/>'),
+    fg('N&ordm; da Cota',H('cota'),'<input class="fi" value="'+esc(p.cota||'')+'" oninput="sp(\'cota\',this.value)" placeholder="Ex: 263"/>'),
+    fg('N&ordm; participantes',H('participantes'),'<input type="number" class="fi" value="'+(p.participantes||600)+'" oninput="sp(\'participantes\',+this.value);updateAll()"/>'),
+    fg('Valor do cr&eacute;dito (R$)',H('valor_credito'),'<input type="text" class="fi" id="credito-field" value="'+fmtBRL(p.credito||200000)+'" onblur="creditoBlur(this)" onkeydown="if(event.key===\'Enter\')this.blur()"/>'),
+    '</div>',
+    '<div class="g4">',
+    fg('Prazo total (meses)',H('prazo_total'),'<input type="number" class="fi" value="'+(p.prazo||90)+'" oninput="sp(\'prazo\',+this.value);updateAll()"/>'),
+    fg('Prazo decorrido',H('prazo_decorrido'),'<input type="number" class="fi" value="'+(p.decorrido||7)+'" oninput="sp(\'decorrido\',+this.value);updateAll()"/>'),
+    fg('Lance embutido (%)',H('lance_embutido_pct'),'<input type="number" class="fi" step="0.5" value="'+(p.embutido||15)+'" oninput="sp(\'embutido\',+this.value);updateAll()"/>'),
+    fg('Antecipa&ccedil;&atilde;o esperada (meses)',H('meses_antecipacao'),'<input type="number" class="fi" value="'+(p.antecip||36)+'" oninput="sp(\'antecip\',+this.value);updateAll()"/>'),
+    '</div>',
+    '<div class="g3">',
+    '<div class="fg"><label class="fl">CDI anual (%) '+H('cdi_anual')+'</label><div style="display:flex;align-items:center;gap:8px"><input type="number" class="fi" id="cdi-auto-field" step="0.01" value="'+(p.cdi||14.65)+'" oninput="sp(\'cdi\',+this.value);updateAll()" style="max-width:90px"/><span id="cdi-status" style="font-size:10px;color:var(--t3)">—</span></div></div>',
+    '<div class="fg"><label class="fl">Parcela mensal (R$) '+H('parcela_cheia_campo')+'</label><input type="text" class="fi" id="parcela-cheia-field" value="'+safeParcelaVal()+'" onblur="parcelaBlur(this)" onkeydown="if(event.key===\'Enter\')this.blur()" style="max-width:115px" placeholder="0,00"/></div>',
+    '<div></div>',
+    '</div>'
+  ].join('');
+}
+function fg(label,helpBtn,inputHtml){return '<div class="fg"><label class="fl">'+label+' '+(helpBtn||'')+'</label>'+inputHtml+'</div>';}
+function esc(s){return String(s||'').replace(/"/g,'&quot;');}
+function sp(k,v){getP()[k]=v;save();}
+function creditoBlur(input){var raw=parsePt(input.value);sp('credito',raw);input.value=fmtBRL(raw);updateAll();}
+
+// ============================================================
+// FEE TABLE
+// ============================================================
+function buildFeeTable(){
+  var wrap=document.getElementById('fee-wrap');if(!wrap)return;
+  var p=getP(),f=getF();var credito=p.credito||200000;
+  var fa=parseFloat(f.fundo)||0,adm=parseFloat(f.admin)||0,res=parseFloat(f.reserva)||0,seg=parseFloat(f.seguro)||0,ant=parseFloat(f.antecip)||0;
+  var totalPct=fa+adm+res+seg+ant,totalBRL=credito*totalPct/100;
+  p.parcelaTotal=totalBRL;
+  var pf=document.getElementById('parcela-cheia-field');if(pf&&document.activeElement!==pf)pf.value=fmtBRL(totalBRL);
+  function pIn(key,val){return '<input class="fi-sm" style="width:64px" value="'+fmtNum4(val)+'" data-fkey="'+key+'" data-ftype="pct" onblur="feeBlur(this)" onkeydown="if(event.key===\'Enter\')this.blur()"/>';}
+  function bIn(key,val){return '<input class="fi-sm" style="width:72px" value="'+fmtNum(val)+'" data-fkey="'+key+'" data-ftype="brl" onblur="feeBlur(this)" onkeydown="if(event.key===\'Enter\')this.blur()"/>';}
+  var cols=[{key:'fundo',lbl:'Fundo de Aquisicao',pct:fa,val:credito*fa/100},{key:'admin',lbl:'Taxa de Administracao',pct:adm,val:credito*adm/100},{key:'reserva',lbl:'Fundo de Reserva',pct:res,val:credito*res/100},{key:'seguro',lbl:'Seguro',pct:seg,val:credito*seg/100},{key:'antecip',lbl:'Taxa de Antecipacao',pct:ant,val:credito*ant/100}];
+  var th1='<tr>',th2='<tr>',td='<tr style="background:var(--sf2)">';
+  cols.forEach(function(c){th1+='<th colspan="2" style="text-align:center;border-right:2px solid var(--bm)">'+c.lbl+'</th>';th2+='<th style="text-align:center;font-style:italic">%</th><th style="text-align:center;font-style:italic;border-right:2px solid var(--bm)">R$</th>';td+='<td style="text-align:center">'+pIn(c.key,c.pct)+'</td><td style="text-align:center;border-right:2px solid var(--bm)">'+bIn(c.key,c.val)+'</td>';});
+  th1+='<th colspan="2" style="text-align:center;background:var(--bbg);color:var(--btx)">Total</th></tr>';
+  th2+='<th style="text-align:center;background:var(--bbg);color:var(--btx);font-style:italic">%</th><th style="text-align:center;background:var(--bbg);color:var(--btx);font-style:italic">R$</th></tr>';
+  td+='<td style="text-align:center;background:var(--bbg);font-weight:700;color:var(--btx)">'+fmtNum4(totalPct)+'</td><td style="text-align:center;background:var(--bbg);font-weight:700;color:var(--btx);font-size:14px">'+brl(totalBRL)+'</td></tr>';
+  wrap.innerHTML='<div style="overflow-x:auto"><table class="fee-tbl" style="min-width:720px"><thead>'+th1+th2+'</thead><tbody>'+td+'</tbody></table></div><div style="font-size:10px;color:var(--t3);margin-top:6px">Cada campo aceita edicao direta de % ou R$. Total mensal <strong>'+brl(totalBRL)+'</strong> usado como referencia no custo de oportunidade.</div>';
+}
+function feeBlur(input){var key=input.getAttribute('data-fkey'),type=input.getAttribute('data-ftype'),raw=parsePt(input.value),p=getP(),f=getF(),credito=p.credito||200000;if(type==='pct'){f[key]=raw;if(key==='admin')p.taxaAdmin=raw;if(key==='reserva')p.freserva=raw;if(key==='seguro')p.seguro=raw;}else{var pct=(raw/credito)*100;f[key]=pct;if(key==='admin')p.taxaAdmin=pct;if(key==='reserva')p.freserva=pct;if(key==='seguro')p.seguro=pct;}save();buildFeeTable();updateAll();}
+
+// ============================================================
+// ASSEMBLIES
+// ============================================================
+function addAssembly(){var a=getA();if(a.length>=90){alert('Maximo 90 assembleias.');return;}a.push({num:a.length+1,date:'',lances:[{cota:'',pct:'',mod:'livre'}],sorteio:'',sorteio_canc:'',lance_livre:0,lance_fixo:0,saldo_ini:'',arr_lances:'',entregue:'',saldo_atual:'',ativas:'',inativas:'',aptas:'',nao_aptas:'',contempladas:''});renderAssemblies();updateAll();save();var cards=document.querySelectorAll('.ac'),last=cards[cards.length-1];if(last){last.scrollIntoView({behavior:'smooth',block:'center'});last.classList.add('open');}}
+function renderAssemblies(){var cont=document.getElementById('asm-container');if(!cont)return;cont.innerHTML='';getA().forEach(function(d,i){appendCard(d,i,cont);});var n=getA().length;var cl=document.getElementById('count-lbl');if(cl)cl.textContent=(90-n)+' vagas disponiveis';var ab=document.getElementById('add-asm-btn');if(ab)ab.style.display=n>=90?'none':'inline-flex';document.getElementById('asm-badge').textContent=n+(n===1?' assembleia':' assembleias');}
+function appendCard(d,i,cont){
+  var el=document.createElement('div');el.className='ac';el.id='ac-'+i;
+  var dl=fmtDate(d.date)||'sem data';
+  var ws=(d.lances||[]).filter(function(l){return l.pct&&l.mod!=='sorteio';});
+  var sub=dl+' \u00b7 '+(ws.length?ws.map(function(l){return p2(parseFloat(l.pct));}).join(', '):'sem lances');
+  var h='<div class="ac-hdr" onclick="toggleAc('+i+')">';
+  h+='<div class="ac-num">'+d.num+'</div>';
+  h+='<div class="ac-ta"><div class="ac-ttl">Assembleia '+d.num+'</div><div class="ac-sb" id="sb-'+i+'">'+sub+'</div></div>';
+  h+='<button class="btn btn-sm" style="color:var(--rtx);border-color:transparent;padding:3px 7px" onclick="rmAc(event,'+i+')">x</button>';
+  h+='<span class="ac-tog">v</span></div>';
+  h+='<div class="ac-body"><div style="padding-top:10px">';
+  h+='<div class="g3"><div class="fg"><label class="fl">Data</label><input type="date" class="fi" value="'+(d.date||'')+'" oninput="acf('+i+',\'date\',this.value)"/></div></div>';
+  h+='<div class="fsub"><div class="fsub-t"><span>Lances vencedores</span><button class="btn btn-sm" onclick="addLance('+i+')">+ Lance</button></div>';
+  h+='<table class="lt"><thead><tr><th>Cota</th><th>% Lance</th><th>Modalidade</th><th></th></tr></thead><tbody id="lb-'+i+'"></tbody></table></div>';
+  h+='<div class="fsub"><div class="fsub-t">Sorteio</div><div class="g2">';
+  h+='<div class="fg"><label class="fl">Cota ativa sorteada</label><input type="text" class="fi" placeholder="ex: 456" value="'+(d.sorteio||'')+'" oninput="acf('+i+',\'sorteio\',this.value)"/></div>';
+  h+='<div class="fg"><label class="fl">Cota cancelada sorteada</label><input type="text" class="fi" placeholder="ex: 104/1" value="'+(d.sorteio_canc||'')+'" oninput="acf('+i+',\'sorteio_canc\',this.value)"/></div>';
+  h+='</div></div>';
+  h+='<div class="fsub"><div class="fsub-t">Contemplacoes</div><div class="g2">';
+  h+='<div class="fg"><label class="fl">Cotas por lance livre</label><input type="number" class="fi" value="'+(d.lance_livre||'')+'" oninput="acf('+i+',\'lance_livre\',+this.value)"/></div>';
+  h+='<div class="fg"><label class="fl">Cotas por lance fixo</label><input type="number" class="fi" value="'+(d.lance_fixo||'')+'" oninput="acf('+i+',\'lance_fixo\',+this.value)"/></div>';
+  h+='</div></div>';
+  h+='<div class="fsub"><div class="fsub-t">Saldo do grupo (R$)</div><div class="g2">';
+  h+='<div class="fg"><label class="fl">Saldo inicial</label><input type="text" class="fi" placeholder="0,00" value="'+(d.saldo_ini?fmtBRL(d.saldo_ini):'')+'" onblur="asmMoneyBlur(this,'+i+',\'saldo_ini\')" onkeydown="if(event.key===\'Enter\')this.blur()"/></div>';
+  h+='<div class="fg"><label class="fl">Arrecadado com lances</label><input type="text" class="fi" placeholder="0,00" value="'+(d.arr_lances?fmtBRL(d.arr_lances):'')+'" onblur="asmMoneyBlur(this,'+i+',\'arr_lances\')" onkeydown="if(event.key===\'Enter\')this.blur()"/></div>';
+  h+='<div class="fg"><label class="fl">Total entregue</label><input type="text" class="fi" placeholder="0,00" value="'+(d.entregue?fmtBRL(d.entregue):'')+'" onblur="asmMoneyBlur(this,'+i+',\'entregue\')" onkeydown="if(event.key===\'Enter\')this.blur()"/></div>';
+  h+='<div class="fg"><label class="fl">Saldo atual</label><input type="text" class="fi" placeholder="0,00" value="'+(d.saldo_atual?fmtBRL(d.saldo_atual):'')+'" onblur="asmMoneyBlur(this,'+i+',\'saldo_atual\')" onkeydown="if(event.key===\'Enter\')this.blur()"/></div>';
+  h+='</div></div>';
+  h+='<div class="fsub"><div class="fsub-t">Situacao das cotas</div><div class="g3">';
+  h+='<div class="fg"><label class="fl">Ativas</label><input type="number" class="fi" value="'+(d.ativas||'')+'" oninput="acf('+i+',\'ativas\',+this.value)"/></div>';
+  h+='<div class="fg"><label class="fl">Inativas</label><input type="number" class="fi" value="'+(d.inativas||'')+'" oninput="acf('+i+',\'inativas\',+this.value)"/></div>';
+  h+='<div class="fg"><label class="fl">Contempladas (acum.)</label><input type="number" class="fi" value="'+(d.contempladas||'')+'" oninput="acf('+i+',\'contempladas\',+this.value)"/></div>';
+  h+='</div></div>';
+  h+='<div class="fsub"><div class="fsub-t">Mapa de cotas</div><div class="g2">';
+  h+='<div class="fg"><label class="fl">Aptas</label><input type="number" class="fi" value="'+(d.aptas||'')+'" oninput="acf('+i+',\'aptas\',+this.value)"/></div>';
+  h+='<div class="fg"><label class="fl">Nao aptas</label><input type="number" class="fi" value="'+(d.nao_aptas||'')+'" oninput="acf('+i+',\'nao_aptas\',+this.value)"/></div>';
+  h+='</div></div>';
+  h+='</div></div>';
+  el.innerHTML=h;cont.appendChild(el);renderLances(d,i);
+}
+function asmMoneyBlur(input,i,key){var raw=parsePt(input.value);getA()[i][key]=String(raw);input.value=raw?fmtBRL(raw):'';save();}
+function renderLances(d,i){var tb=document.getElementById('lb-'+i);if(!tb)return;tb.innerHTML='';(d.lances||[]).forEach(function(l,li){var tr=document.createElement('tr');var h='<td><input type="text" class="fi" placeholder="Cota" value="'+(l.cota||'')+'" oninput="setLF('+i+','+li+',\'cota\',this.value)" style="width:100%"/></td>';h+='<td><input type="number" class="fi" placeholder="0,0000" step="0.0001" value="'+(l.pct||'')+'" oninput="setLF('+i+','+li+',\'pct\',this.value);updateAll()" style="width:100%"/></td>';h+='<td><select class="fi" onchange="setLF('+i+','+li+',\'mod\',this.value)"><option value="livre"'+(l.mod==='livre'?' selected':'')+'>Lance livre</option><option value="fixo"'+(l.mod==='fixo'?' selected':'')+'>Lance fixo</option><option value="sorteio"'+(l.mod==='sorteio'?' selected':'')+'>Sorteio</option></select></td>';h+='<td><button class="btn" style="padding:3px 7px;color:var(--t3)" onclick="rmLance('+i+','+li+')">x</button></td>';tr.innerHTML=h;tb.appendChild(tr);});}
+function setLF(i,li,k,v){getA()[i].lances[li][k]=v;save();}
+function acf(i,k,v){getA()[i][k]=v;var sb=document.getElementById('sb-'+i);if(sb){var d=getA()[i];var dl=fmtDate(d.date)||'sem data';var ws=(d.lances||[]).filter(function(l){return l.pct&&l.mod!=='sorteio';});sb.textContent=dl+' \u00b7 '+(ws.length?ws.map(function(l){return p2(parseFloat(l.pct));}).join(', '):'sem lances');}updateAll();save();}
+function addLance(i){getA()[i].lances.push({cota:'',pct:'',mod:'livre'});renderLances(getA()[i],i);save();}
+function rmLance(i,li){var a=getA()[i];a.lances.splice(li,1);if(!a.lances.length)a.lances.push({cota:'',pct:'',mod:'livre'});renderLances(a,i);updateAll();save();}
+function toggleAc(i){var el=document.getElementById('ac-'+i);if(el)el.classList.toggle('open');}
+function rmAc(e,i){e.stopPropagation();if(!confirm('Remover assembleia '+getA()[i].num+'?'))return;getA().splice(i,1);getA().forEach(function(a,j){a.num=j+1;});renderAssemblies();updateAll();save();}
+function collapseAll(){document.querySelectorAll('.ac').forEach(function(c){c.classList.remove('open');});}
+function expandAll(){document.querySelectorAll('.ac').forEach(function(c){c.classList.add('open');});}
+function clearAsm(){if(!confirm('Apagar TODAS as assembleias deste consorcio?'))return;getC().assemblies=[];renderAssemblies();updateAll();save();}
+
+// ============================================================
+// ANALYSIS ENGINE
+// ============================================================
+function setEl(id,html){var el=document.getElementById(id);if(el)el.innerHTML=html;}
+
+function updateAll(){
+  var a=getA(),p=getP(),f=getF();
+  var n=a.length,credito=p.credito||200000,prazoT=p.prazo||90,prazoD=p.decorrido||7;
+  var cdi=p.cdi||14.65,embutido=p.embutido||15,mesesAntParam=p.antecip||36;
+  var prazoRest=Math.max(1,prazoT-prazoD);
+  var noData='<p style="font-size:12px;color:var(--t3)">Adicione assembleias com lances para calcular.</p>';
+  document.getElementById('asm-badge').textContent=n+(n===1?' assembleia':' assembleias');
+  var l6=a.slice(Math.max(0,n-6)),l6w=getWinners(l6),allW=getWinners(a);
+  var has=l6w.length>=2;
+  var mm6=has?mean(l6w):0,sig=has?stdDev(l6w):0,minR=has?minA(l6w):0;
+  var p75v=has?pct75(l6w):0,ewmaV=allW.length?ewmaCalc(allW):0,kdeM=has?kdeMode(l6w):0;
+  var slope=allW.length>=2?linearSlope(allW):0;
+  var slopeAdj=Math.max(-0.3,Math.min(0.5,slope*2)),multSig=0.35+slopeAdj;
+  renderSidebar(a,n,has,mm6,sig,minR,p75v,ewmaV,kdeM,slope,multSig,l6w,allW,credito,embutido);
+  buildSorteio(a,credito);
+  if(!has){setEl('s1-content',noData);setEl('co-content',noData);if(n>0)buildAccuracy(a,credito);else setEl('acc-content','<p style="font-size:12px;color:var(--t3)">Adicione assembleias para ver a tabela de acerto.</p>');setEl('conc-content',noData);setEl('sim-content',noData);updateChart([]);return;}
+  var pMin=mm6-sig*0.5,pBal=mm6+sig*multSig,pMax=mm6+sig;
+  var mesesAnt=calcMesesAntecipados(pBal,l6w,a,prazoRest,mesesAntParam);
+  getP().mesesAntComputado=mesesAnt;
+  var prMin=Math.min(99.9,MC_KDE(4000,pMin,l6w)),prBal=Math.min(99.9,MC_KDE(4000,pBal,l6w)),prMax=Math.min(99.9,MC_KDE(4000,pMax,l6w));
+  buildStrategies(credito,pMin,pBal,pMax,prMin,prBal,prMax,mm6,sig,ewmaV,p75v,l6w.length,embutido);
+  var parcela_atual=(p.parcelaTotal&&p.parcelaTotal>0)?p.parcelaTotal:credito*(1+(p.taxaAdmin||8.5976)/100)/prazoRest;
+  var beneficio=parcela_atual*mesesAnt,fatorCDB=Math.pow(1+cdi/100,mesesAnt/12)-1;
+  var lA=credito*pBal/100,cashPct=Math.max(0,pBal-embutido),lB=credito*cashPct/100;
+  var rA=lA*fatorCDB,rB=lB*fatorCDB,sA=beneficio-rA,sB=beneficio-rB;
+  buildCO(beneficio,cdi,fatorCDB,mesesAnt,pBal,lA,rA,sA,sA>0,cashPct,embutido,lB,rB,sB,sB>0,credito,parcela_atual);
+  buildAccuracy(a,credito);
+  buildConclusion(credito,embutido,pMin,pBal,pMax,prMin,prBal,prMax,sA,sB,sA>0,sB>0,mm6,sig,ewmaV,p75v,kdeM,slope,multSig,l6w);
+  buildSorteio(a,credito);
+  if(has)buildSim(credito,embutido,mm6,sig,l6w,a,multSig,ewmaV,p75v,pMin,pMax,slope);
+  var hd=a.map(function(aa){var w=aa.lances.filter(function(l){return l.pct&&l.mod!=='sorteio';}).map(function(l){return parseFloat(l.pct);}).filter(function(v){return!isNaN(v);});return{num:aa.num,date:aa.date,min:w.length?minA(w):null,avg:w.length?mean(w):null,cnt:w.length};});
+  updateChart(hd);
+}
+
+function buildStrategies(credito,pMin,pBal,pMax,prMin,prBal,prMax,mm6,sig,ewmaV,p75v,refN,embutido){
+  var creditoLiq=credito*(1-embutido/100);
+  var rows=[{lbl:'Lance minimo viavel',sub:'Maxima economia de capital',p:pMin,pr:prMin,rc:'row-min',bc:'ba',bt:'Minimo'},{lbl:'Lance balanceado (ideal)',sub:'Equilibrio otimo — recomendado',p:pBal,pr:prBal,rc:'',bc:'bb',bt:'Ideal'},{lbl:'Lance de seguranca',sub:'Cobertura total historica',p:pMax,pr:prMax,rc:'row-max',bc:'bg2',bt:'Maximo'}];
+  var html='<div style="overflow-x:auto"><table class="tbl"><thead><tr style="background:var(--sf2)"><th rowspan="2">Cenario</th><th colspan="2" style="text-align:center;border-bottom:1px solid var(--bm);color:var(--btx)">S1 — Lance livre puro '+H('estrategia1')+'</th><th colspan="3" style="text-align:center;border-bottom:1px solid var(--bm);color:var(--gtx)">S2 — Lance embutido ('+p2(embutido)+') '+H('estrategia2')+'</th><th rowspan="2" style="text-align:center">Probabilidade MC KDE '+H('monte_carlo')+'</th></tr>';
+  html+='<tr style="background:var(--sf2)"><th style="color:var(--btx)">% Lance livre</th><th style="color:var(--btx)">R$ Desembolso</th><th style="color:var(--gtx)">% Caixa</th><th style="color:var(--gtx)">R$ Caixa</th><th style="color:var(--gtx)">Credito liquido</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var cashPct=Math.max(0,r.p-embutido),pc=probColor(r.pr),isIdeal=r.bt==='Ideal';
+    var rowStyle=isIdeal?'background:rgba(22,163,74,.06);':'';
+    html+='<tr style="'+rowStyle+'"><td><div style="font-weight:'+(isIdeal?'700':'600')+';font-size:'+(isIdeal?'13px':'12px')+'">'+r.lbl+'</div><div class="note">'+r.sub+'</div><span class="bd '+r.bc+'" style="margin-top:4px">'+r.bt+'</span></td>';
+    html+='<td style="font-size:'+(isIdeal?'17px':'15px')+';font-weight:700;color:var(--btx)">'+p2(r.p)+'</td>';
+    html+='<td style="font-weight:'+(isIdeal?'700':'600')+'">'+brl(credito*r.p/100)+'</td>';
+    html+='<td style="font-size:'+(isIdeal?'15px':'13px')+';font-weight:700;color:var(--gtx)">'+p2(cashPct)+'</td>';
+    html+='<td style="font-weight:'+(isIdeal?'700':'600')+';color:var(--gtx)">'+brl(credito*cashPct/100)+'</td>';
+    html+='<td style="font-size:11px;color:var(--t2)">'+brl(creditoLiq)+'<div class="note">'+p2(100-embutido)+' do cred.</div></td>';
+    html+='<td style="text-align:center"><div style="font-size:'+(isIdeal?'17px':'14px')+';font-weight:700;color:'+pc+'">'+r.pr.toFixed(1)+'%</div><div class="pb"><div class="pf" style="width:'+r.pr.toFixed(0)+'%;background:'+pc+'"></div></div></td></tr>';
+  });
+  html+='</tbody></table></div><div style="font-size:10px;color:var(--t3);margin-top:8px;padding:7px 10px;background:var(--sf2);border-radius:var(--rs)">MM6='+p2(mm6)+' sigma='+p2(sig)+' EWMA='+p2(ewmaV)+' P75='+p2(p75v)+' — '+refN+' lances de referencia. S2: lance embutido usa '+p2(embutido)+' do credito ('+brl(credito*embutido/100)+') como lance, credito liquido recebido = '+brl(creditoLiq)+'.</div>';
+  setEl('s1-content',html);
+}
+
+function buildCO(beneficio,cdi,fatorCDB,mesesAnt,pBal,lA,rA,sA,okA,cashPct,embutido,lB,rB,sB,okB,credito,parcela_atual){
+  var creditoLiq=credito*(1-embutido/100);
+  var l6wRef=getWinners(getA().slice(Math.max(0,getA().length-6)));
+  var probBal=l6wRef.length?Math.min(99.9,MC_KDE(3000,pBal,l6wRef)):0;
+  var lanceBRL=credito*pBal/100,caixaBRL=credito*cashPct/100;
+  var html='<div style="background:var(--gbg);border:1px solid rgba(22,163,74,.2);border-radius:var(--r);padding:12px 14px;margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:var(--gtx);margin-bottom:8px">Lance de referencia: Lance ideal (Recomendacao objetiva final)</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px">';
+  html+='<div class="mc"><div class="mc-l">Lance livre (S1)</div><div class="mc-v" style="font-size:15px;color:var(--btx)">'+p2(pBal)+'</div><div class="mc-s">'+brl(lanceBRL)+'</div></div>';
+  html+='<div class="mc"><div class="mc-l">Caixa embutido (S2)</div><div class="mc-v" style="font-size:15px;color:var(--gtx)">'+p2(cashPct)+'</div><div class="mc-s">'+brl(caixaBRL)+'</div></div>';
+  html+='<div class="mc"><div class="mc-l">Prob. MC KDE</div><div class="mc-v" style="font-size:15px;color:'+(probBal>80?'var(--gtx)':probBal>60?'var(--btx)':'var(--atx)')+'">'+probBal.toFixed(1)+'%</div><div class="mc-s">contemplacao</div></div>';
+  html+='<div class="mc" style="background:var(--bbg)"><div class="mc-l" style="color:var(--btx)">Meses antecipados</div><div class="mc-v" style="font-size:18px;color:var(--btx)">'+mesesAnt+'</div><div class="mc-s" style="color:var(--btx)">calculado automaticamente</div></div>';
+  html+='<div class="mc"><div class="mc-l">Fator CDB ('+mesesAnt+'m)</div><div class="mc-v" style="font-size:13px">'+p2(fatorCDB*100)+'</div><div class="mc-s">CDI '+p2(cdi)+' a.a.</div></div>';
+  html+='</div><div style="font-size:10px;color:var(--gtx);margin-top:8px">Beneficio da antecipacao: '+brl(parcela_atual)+'/mes x '+mesesAnt+' meses = <strong>'+brl(beneficio)+'</strong></div></div>';
+  html+='<div style="background:var(--sf2);border-radius:var(--r);padding:14px;border:1px solid var(--bo)"><div style="font-weight:600;font-size:13px;margin-bottom:10px">Comparativo — S1 Lance livre vs. S2 Lance embutido</div>';
+  html+='<table class="tbl" style="font-size:12px"><thead><tr><th>Item</th><th>S1 — Lance livre</th><th>S2 — Lance embutido</th><th>Diferenca</th><th style="color:var(--t3);font-weight:400;font-size:10px">Explicacao</th></tr></thead><tbody>';
+  html+='<tr><td><strong>Desembolso caixa</strong></td><td style="font-weight:600">'+brl(lA)+'<div class="note">'+p2(pBal)+' x credito</div></td><td style="font-weight:600;color:var(--gtx)">'+brl(lB)+'<div class="note">'+p2(cashPct)+' x credito</div></td><td style="color:var(--gtx)">- '+brl(lA-lB)+'</td><td class="note">S1: paga 100% do lance em caixa. S2: cede '+p2(embutido)+' do credito como lance embutido, paga apenas '+p2(cashPct)+' em dinheiro.</td></tr>';
+  html+='<tr><td><strong>Custo CDB (oport.)</strong></td><td style="color:var(--rtx)">- '+brl(rA)+'</td><td style="color:var(--rtx)">- '+brl(rB)+'</td><td style="color:var(--gtx)">- '+brl(rA-rB)+'</td><td class="note">Rendimento perdido: CDB '+p2(cdi)+' a.a. por '+mesesAnt+' meses = fator '+p2(fatorCDB*100)+' sobre o desembolso.</td></tr>';
+  html+='<tr><td><strong>Beneficio antecipacao</strong></td><td style="color:var(--gtx)">+ '+brl(beneficio)+'</td><td style="color:var(--gtx)">+ '+brl(beneficio)+'</td><td>—</td><td class="note">Parcelas economizadas: '+brl(parcela_atual)+'/mes x '+mesesAnt+' meses antecipados pela contemplacao via lance.</td></tr>';
+  html+='<tr><td><strong>Credito recebido</strong></td><td>'+brl(credito)+'</td><td>'+brl(creditoLiq)+'<div class="note">- '+p2(embutido)+' embutido</div></td><td style="color:var(--rtx)">- '+brl(credito*embutido/100)+'</td><td class="note">S2: credito liquido reduzido em '+p2(embutido)+' pois parte foi usada como lance embutido.</td></tr>';
+  var cA=okA?'var(--gtx)':'var(--rtx)',cB=okB?'var(--gtx)':'var(--rtx)';
+  html+='<tr style="background:var(--sf2)"><td><strong>Saldo final</strong><div class="note">Beneficio - Custo CDB</div></td><td style="font-size:17px;font-weight:700;color:'+cA+'">'+(okA?'+':'')+brl(sA)+'<div class="note" style="font-size:10px;color:'+cA+'">'+(okA?'Vale o lance':'CDB rende mais')+'</div></td><td style="font-size:17px;font-weight:700;color:'+cB+'">'+(okB?'+':'')+brl(sB)+'<div class="note" style="font-size:10px;color:'+cB+'">'+(okB?'Vale o lance':'CDB rende mais')+'</div></td><td style="font-weight:600;color:'+(sB>sA?'var(--gtx)':'var(--btx)')+'">'+(sB>sA?'S2 melhor':'S1 melhor')+'</td><td class="note">Saldo = Beneficio ('+brl(beneficio)+') - Custo CDB. Positivo: dar lance e mais vantajoso que manter em CDB.</td></tr>';
+  html+='</tbody></table><div style="font-size:10px;color:var(--t3);margin-top:8px">Parcela: '+brl(parcela_atual)+'/mes | '+mesesAnt+' meses antecipados | CDI: '+p2(cdi)+' a.a.</div></div>';
+  setEl('co-content',html);
+}
+
+function buildAccuracy(a,credito){
+  var n=a.length;
+  if(!n){setEl('acc-content','<p style="font-size:12px;color:var(--t3)">Adicione assembleias para ver a tabela de acerto.</p>');return;}
+  var rows=[],acertos=0,total=0;
+  for(var i=0;i<n;i++){
+    var asmNum=a[i].num;
+    if(i<5){var realW2=a[i].lances.filter(function(l){return l.pct&&l.mod!=='sorteio';}).map(function(l){return parseFloat(l.pct);}).filter(function(v){return!isNaN(v);});rows.push({num:asmNum,date:a[i].date,sug:null,real:realW2.length?Math.min.apply(null,realW2):null,ok:null,margin:null,status:'aguardando'});continue;}
+    var prev=a.slice(0,i),prevW=getWinners(prev);
+    if(prevW.length<2){rows.push({num:asmNum,date:a[i].date,sug:null,real:null,ok:null,margin:null,status:'insuficiente'});continue;}
+    var l6p=prev.slice(Math.max(0,prev.length-6)),l6w=getWinners(l6p);
+    var m6=mean(l6w),s6=stdDev(l6w);
+    var cvW2=(s6&&m6)?Math.max(0,Math.min(1,(s6/m6*100-2)/10)):0;
+    var sug=m6+s6*(0.3+cvW2*0.4);
+    var realW=a[i].lances.filter(function(l){return l.pct&&l.mod!=='sorteio';}).map(function(l){return parseFloat(l.pct);}).filter(function(v){return!isNaN(v);});
+    var realMin=realW.length?Math.min.apply(null,realW):null;
+    var ok=realMin!==null?sug>=realMin:null,margin=realMin!==null?sug-realMin:null;
+    if(ok!==null){total++;if(ok)acertos++;}
+    rows.push({num:asmNum,date:a[i].date,sug:sug,real:realMin,ok:ok,margin:margin,status:'avaliado'});
+  }
+  var taxa=total>0?acertos/total*100:0;
+  var runTaxa=[],runAcertos=0,runTotal=0;
+  rows.forEach(function(r){if(r.status==='avaliado'&&r.ok!==null){runTotal++;if(r.ok)runAcertos++;runTaxa.push(runAcertos/runTotal*100);}else{runTaxa.push(null);}});
+  var trendEvals=runTaxa.filter(function(v){return v!==null;}),trendText='—',trendColor='var(--t3)';
+  if(trendEvals.length>=2){var half=Math.floor(trendEvals.length/2);var diff=mean(trendEvals.slice(half))-mean(trendEvals.slice(0,half));trendText=(diff>=0?'+':'')+diff.toFixed(1)+'%';trendColor=diff>2?'var(--gtx)':diff<-2?'var(--rtx)':'var(--atx)';}
+  var html='<div class="mg3" style="margin-bottom:12px"><div class="mc"><div class="mc-l">Asm. avaliadas</div><div class="mc-v">'+total+'</div><div class="mc-s">a partir da asm. 6</div></div>';
+  html+='<div class="mc"><div class="mc-l">Acertos</div><div class="mc-v" style="color:var(--gtx)">'+acertos+'</div><div class="mc-s">sugestao >= minimo real</div></div>';
+  var tc=taxa>=70?'var(--gtx)':taxa>=50?'var(--atx)':'var(--rtx)';
+  html+='<div class="mc"><div class="mc-l">Taxa de acerto</div><div class="mc-v" style="color:'+tc+'">'+taxa.toFixed(1)+'%</div><div class="mc-s">'+(taxa>=70?'alta precisao':taxa>=50?'moderada':'baixa')+'</div></div></div>';
+  html+='<div style="padding:8px 12px;background:var(--sf2);border-radius:var(--rs);margin-bottom:12px;font-size:11px;display:flex;align-items:center;gap:12px"><div><span style="color:var(--t2)">Tendencia da taxa de acerto:</span> <strong style="color:'+trendColor+'">'+trendText+'</strong></div><div class="note">Positivo = modelo esta cada vez mais preciso.</div></div>';
+  html+='<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Asm.</th><th>Data</th><th>Lance sugerido '+H('lance_sug')+'</th><th>R$ sugerido</th><th>Min. real vencedor '+H('min_real')+'</th><th>R$ real</th><th>Resultado</th><th>Margem</th><th>Taxa acum.</th></tr></thead><tbody>';
+  var runI=0;
+  rows.forEach(function(r){
+    var runV=null;if(r.status==='avaliado'&&r.ok!==null){runV=runTaxa[runI];}runI++;
+    if(r.status==='aguardando'){html+='<tr><td><div class="ac-num" style="display:inline-flex">'+r.num+'</div></td><td style="font-size:10px">'+fmtDate(r.date)+'</td><td colspan="2" class="note" style="color:var(--t3)">Aguardando 5 assembleias anteriores</td><td style="font-size:13px;font-weight:600;color:var(--t2)">'+(r.real!==null?p2(r.real):'—')+'</td><td style="font-size:11px">'+(r.real!==null?brl(credito*r.real/100):'—')+'</td><td colspan="3" class="note" style="color:var(--t3)">—</td></tr>';return;}
+    if(r.status==='insuficiente'){html+='<tr><td><div class="ac-num" style="display:inline-flex">'+r.num+'</div></td><td style="font-size:10px">'+fmtDate(r.date)+'</td><td colspan="7" class="note" style="color:var(--t3)">Dados insuficientes para calculo</td></tr>';return;}
+    html+='<tr class="'+(r.ok?'acc-ok':'acc-no')+'"><td><div class="ac-num" style="display:inline-flex">'+r.num+'</div></td><td style="font-size:10px">'+fmtDate(r.date)+'</td>';
+    html+='<td><div style="font-size:13px;font-weight:600;color:var(--btx)">'+p2(r.sug)+'</div><div class="note">MM6 + sigma x mult(CV)</div></td><td style="font-size:11px">'+brl(credito*r.sug/100)+'</td>';
+    html+='<td><div style="font-size:13px;font-weight:600;color:var(--t2)">'+p2(r.real)+'</div><div class="note">menor lance livre asm '+r.num+'</div></td><td style="font-size:11px">'+brl(credito*r.real/100)+'</td>';
+    html+='<td>'+(r.ok?'<span class="bd bg2">Acerto</span>':'<span class="bd ba">Abaixo</span>')+'</td>';
+    var mc2=r.margin>=0?'var(--gtx)':'var(--rtx)';
+    html+='<td style="font-size:11px;color:'+mc2+'">'+(r.margin>=0?'+':'')+p2(r.margin)+'</td>';
+    var runC=runV>=70?'var(--gtx)':runV>=50?'var(--atx)':'var(--rtx)';
+    html+='<td style="font-size:12px;font-weight:600;color:'+(runV!==null?runC:'var(--t3)')+'">'+(runV!==null?runV.toFixed(1)+'%':'—')+'</td></tr>';
+  });
+  html+='</tbody></table></div>';
+  html+='<div style="font-size:10px;color:var(--t3);margin-top:8px;padding:7px 10px;background:var(--sf2);border-radius:var(--rs)"><strong>Lance sugerido</strong>: MM6 + sigma x mult(CV) usando SOMENTE assembleias anteriores. <strong>Minimo real vencedor</strong>: menor % entre lances tipo "livre" da assembleia avaliada. <strong>Taxa acum.</strong>: taxa de acerto acumulada ate aquela assembleia.</div>';
+  html+='<div style="margin-top:10px"><button class="btn btn-p" onclick="addAssembly()">+ Inserir proxima assembleia</button></div>';
+  setEl('acc-content',html);
+}
+
+function buildConclusion(credito,embutido,pMin,pBal,pMax,prMin,prBal,prMax,sA,sB,okA,okB,mm6,sig,ewmaV,p75v,kdeM,slope,multSig,l6w){
+  var el=document.getElementById('conc-content');if(!el)return;
+  function mcP(p){return l6w.length?Math.min(99.9,MC(3000,p,l6w)):0;}
+  var sAdj6=slope*(l6w.length||1)*0.5;
+  var indRows=[
+    {ind:'MM6 + Slope',lmin:mm6+sAdj6-sig*0.4,lmax:mm6+sAdj6+sig*0.6,base:'MM6 ajustado pela tendencia linear (slope='+slope.toFixed(3)+'%/asm). Captura direcao direcional dos vencedores.'},
+    {ind:'KDE Mode',lmin:kdeM-sig*0.3,lmax:kdeM+sig*0.3,base:'Moda empirica via KDE (Silverman bandwidth). Pico da distribuicao real dos lances sem assumir normalidade.'},
+    {ind:'EWMA',lmin:ewmaV-sig*0.3,lmax:ewmaV+sig*0.3,base:'Media ponderada exponencial (lambda=0,3). Mais peso aos lances recentes.'},
+    {ind:'Percentil 75',lmin:p75v-sig*0.3,lmax:p75v,base:'75% dos lances historicos ficaram abaixo do P75. Piso de seguranca estatistica.'},
+    {ind:'KDE MC 70%',lmin:null,lmax:findMCLance_KDE(0.70,l6w),base:'Lance minimo para 70% de prob. MC KDE (amostragem empirica real, nao normal).'},
+    {ind:'KDE MC 90%',lmin:null,lmax:findMCLance_KDE(0.90,l6w),base:'Lance minimo para 90% de prob. MC KDE (maxima seguranca empirica).'}
+  ];
+  function medArr(a){var s=a.slice().sort(function(x,y){return x-y;});return s[Math.floor(s.length/2)];}
+  var vMins=indRows.filter(function(r){return r.lmin!==null;}).map(function(r){return r.lmin;});
+  var vMaxs=indRows.map(function(r){return r.lmax;});
+  var cMin=medArr(vMins),cMax=medArr(vMaxs),cIdeal=pBal;
+  var cMinP=mcP(cMin),cMaxP=mcP(cMax);
+  var agrees=indRows.filter(function(r){var mn=r.lmin!==null?r.lmin:r.lmax-sig*0.3;return mn<=cMax&&r.lmax>=cMin;}).length;
+  var html='<div class="conc-box"><div class="conc-title">Faixa de trabalho por indicador — Assembleia '+(getA().length+1)+' '+H('conclusao')+'</div>';
+  html+='<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Indicador</th><th>Lance minimo</th><th>Lance maximo</th><th>Prob. min.</th><th>Prob. max.</th><th>Base do calculo</th></tr></thead><tbody>';
+  indRows.forEach(function(r){
+    var pMn=r.lmin!==null?mcP(r.lmin):null,pMx=mcP(r.lmax);
+    var cMx=pMx>80?'var(--gtx)':'var(--btx)';
+    html+='<tr><td style="font-weight:500">'+r.ind+'</td><td style="color:var(--atx)">'+(r.lmin!==null?p2(r.lmin):'—')+'</td><td style="color:var(--btx);font-weight:600">'+p2(r.lmax)+'</td><td style="color:'+(pMn!==null?(pMn<60?'var(--rtx)':'var(--atx)'):'var(--t3)')+';font-weight:500">'+(pMn!==null?pMn.toFixed(1)+'%':'—')+'</td><td style="color:'+cMx+';font-weight:500">'+pMx.toFixed(1)+'%</td><td class="note">'+r.base+'</td></tr>';
+  });
+  html+='<tr style="background:var(--bbg)"><td style="font-weight:800;color:var(--btx);font-size:13px"><strong>CONSENSO ('+agrees+'/6 concordam)</strong></td><td style="color:var(--gtx);font-weight:600">'+p2(cMin)+'</td><td style="color:var(--btx);font-weight:600">'+p2(cMax)+'</td><td style="color:'+(cMinP>60?'var(--atx)':'var(--rtx)')+';font-weight:600">'+cMinP.toFixed(1)+'%</td><td style="color:var(--gtx);font-weight:600">'+cMaxP.toFixed(1)+'%</td><td class="note">Mediana de todos os indicadores — faixa unificada</td></tr>';
+  html+='</tbody></table></div></div>';
+  html+='<div class="conc-box" style="background:var(--bbg);border-color:rgba(37,99,235,.25)"><div class="conc-title" style="color:var(--btx)">Recomendacao objetiva final</div>';
+  html+='<div style="font-size:11px;color:var(--t2);line-height:1.7;margin-bottom:12px">MM6=<strong>'+p2(mm6)+'</strong> &nbsp;sigma=<strong>'+p2(sig)+'</strong> &nbsp;KDE=<strong>'+p2(kdeM)+'</strong> &nbsp;Slope=<strong>'+(slope>=0?'+':'')+slope.toFixed(3)+'%/asm</strong> &nbsp;EWMA=<strong>'+p2(ewmaV)+'</strong> &nbsp;P75=<strong>'+p2(p75v)+'</strong></div>';
+  var lanceDefs=[
+    {tipo:'Lance minimo viavel',pct:cMin,prob:cMinP,ind:'Consenso (mediana dos indicadores)',desc:'Menor valor com chance competitiva. '+agrees+'/6 indicadores convergem acima deste patamar.',badge:'ba',bt:'Arriscar se capital limitado'},
+    {tipo:'Lance ideal (consenso)',pct:cIdeal,prob:prBal,ind:'MM6 + '+multSig.toFixed(2)+'sigma | EWMA | P75',desc:'Consenso MM6+Slope ('+slope.toFixed(3)+'%/asm), KDE Mode e EWMA. Mult. sigma slope-ajustado: x'+multSig.toFixed(2)+'.',badge:'bb',bt:'Recomendado'},
+    {tipo:'Lance de seguranca maxima',pct:cMax,prob:cMaxP,ind:'Consenso maximo | Monte Carlo 90%',desc:'Cobre '+agrees+'/6 indicadores. Prob. '+cMaxP.toFixed(1)+'%. Usar quando contemplacao e urgente.',badge:'bg2',bt:'Alta certeza'}
+  ];
+  html+='<table class="tbl"><thead><tr><th>Tipo de lance</th><th>% S1 (livre)</th><th>R$ S1</th><th>% S2 (caixa)</th><th>R$ S2</th><th>Probabilidade</th><th>Indicadores de suporte</th></tr></thead><tbody>';
+  lanceDefs.forEach(function(l,li){
+    var cp2=Math.max(0,l.pct-embutido),pc=l.prob>80?'var(--gtx)':l.prob>65?'var(--btx)':'var(--atx)';
+    var isIdeal=li===1,rowBg=isIdeal?'background:rgba(22,163,74,.08);border-left:4px solid var(--green);':'';
+    html+='<tr style="'+rowBg+'"><td><div style="font-weight:'+(isIdeal?'800':'600')+';font-size:'+(isIdeal?'14px':'12px')+'">'+l.tipo+'</div><span class="bd '+l.badge+'" style="margin-top:4px">'+l.bt+'</span><div class="note" style="margin-top:5px">'+l.desc+'</div></td>';
+    html+='<td style="font-size:'+(isIdeal?'20px':'17px')+';font-weight:700;color:var(--btx)">'+p2(l.pct)+'</td><td style="font-weight:'+(isIdeal?'700':'600')+';font-size:'+(isIdeal?'14px':'12px')+'">'+brl(credito*l.pct/100)+'</td>';
+    html+='<td style="font-size:'+(isIdeal?'18px':'15px')+';font-weight:700;color:var(--gtx)">'+p2(cp2)+'</td><td style="font-weight:'+(isIdeal?'700':'600')+';font-size:'+(isIdeal?'14px':'12px')+'">'+brl(credito*cp2/100)+'</td>';
+    html+='<td style="font-size:'+(isIdeal?'17px':'15px')+';font-weight:700;color:'+pc+'">'+l.prob.toFixed(1)+'%<div class="pb"><div class="pf" style="width:'+l.prob.toFixed(0)+'%;background:'+pc+'"></div></div></td>';
+    html+='<td class="note">'+l.ind+'</td></tr>';
+  });
+  html+='</tbody></table>';
+  html+='<div style="margin-top:12px;padding:10px 12px;background:var(--sf);border-radius:var(--rs);border:1px solid var(--bo);font-size:11px"><strong style="color:var(--btx)">Faixa de trabalho para a proxima assembleia:</strong><br/>Minimo: <strong>'+p2(cMin)+'</strong> ('+brl(credito*cMin/100)+') &nbsp;|&nbsp; Ideal: <strong>'+p2(cIdeal)+'</strong> ('+brl(credito*cIdeal/100)+') &nbsp;|&nbsp; Maximo: <strong>'+p2(cMax)+'</strong> ('+brl(credito*cMax/100)+')<br/><span style="color:var(--t3)">Com embutido '+p2(embutido)+': caixa entre <strong>'+p2(Math.max(0,cMin-embutido))+'</strong> e <strong>'+p2(Math.max(0,cMax-embutido))+'</strong></span></div></div>';
+  el.innerHTML=html;
+}
+
+function buildSorteio(a,credito){
+  var el=document.getElementById('sorteio-content');if(!el)return;
+  var n=a.length;
+  if(!n){el.innerHTML='<p style="font-size:12px;color:var(--t3)">Adicione assembleias para calcular.</p>';return;}
+  var latest=a[n-1],ativas=parseFloat(latest.ativas)||0,contempladas=parseFloat(latest.contempladas)||0;
+  if(!ativas){el.innerHTML='<p style="font-size:12px;color:var(--t3)">Preencha "Ativas" na ultima assembleia.</p>';return;}
+  var probAsm=1/ativas*100,p3=(1-Math.pow(1-1/ativas,3))*100,p6=(1-Math.pow(1-1/ativas,6))*100,p12=(1-Math.pow(1-1/ativas,12))*100;
+  var pc=probAsm>2?'var(--gtx)':probAsm>0.5?'var(--atx)':'var(--rtx)';
+  var pctC=ativas>0?contempladas/ativas*100:0,mediaEsp=Math.round(ativas);
+  var veredicto=probAsm>2?'Grupo pequeno — sorteio relevante':probAsm>0.5?'Espera media ~'+mediaEsp+' asm por sorteio':'Grupo grande — lance recomendado';
+  var html='<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 14px;background:var(--sf2);border-radius:var(--r);border:1px solid var(--bo)">';
+  html+='<div style="min-width:140px"><div style="font-size:10px;color:var(--t2);margin-bottom:2px">Prob. sorteio — Asm. '+(n+1)+'</div><div style="font-size:28px;font-weight:700;color:'+pc+';line-height:1">'+probAsm.toFixed(4)+'%</div><div style="font-size:10px;color:var(--t3);margin-top:3px">'+ativas+' ativas &middot; '+contempladas+' contempl. ('+pctC.toFixed(0)+'%)</div></div>';
+  html+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
+  html+='<div class="mc" style="min-width:90px;text-align:center"><div class="mc-l">3 asm</div><div class="mc-v" style="font-size:14px;color:var(--btx)">'+p3.toFixed(2)+'%</div></div>';
+  html+='<div class="mc" style="min-width:90px;text-align:center"><div class="mc-l">6 asm</div><div class="mc-v" style="font-size:14px;color:var(--btx)">'+p6.toFixed(2)+'%</div></div>';
+  html+='<div class="mc" style="min-width:90px;text-align:center"><div class="mc-l">12 asm</div><div class="mc-v" style="font-size:14px;color:var(--btx)">'+p12.toFixed(2)+'%</div></div>';
+  html+='</div><div style="flex:1;min-width:180px;font-size:11px;color:var(--t2);padding:8px 10px;background:var(--sf);border-radius:var(--rs);border:1px solid var(--bo)"><strong>'+veredicto+'</strong><br/><span style="font-size:10px;color:var(--t3)">P(acum N) = 1 - (1-1/'+ativas+')^N</span></div>';
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function buildSim(credito,embutido,mm6,sig,l6w,a,multSig,ewmaV,p75v,pMin,pMax,slope){
+  var el=document.getElementById('sim-content');if(!el)return;
+  if(!l6w||l6w.length<2){el.innerHTML='<p style="font-size:12px;color:var(--t3)">Adicione pelo menos 2 assembleias com lances para simular.</p>';return;}
+  var n=a.length,lastAsm=a[n-1],ativas=parseFloat(lastAsm.ativas)||0,aptas=parseFloat(lastAsm.aptas)||0,contempladas=parseFloat(lastAsm.contempladas)||0;
+  var totalContempladas=0;a.forEach(function(aa){totalContempladas+=((aa.lance_livre||0)+(aa.lance_fixo||0)+1);});
+  var mediaContemplPorAsm=n>0?totalContempladas/n:0,pctRestante=ativas>0?(1-contempladas/ativas)*100:100;
+  var idealPct=mm6+sig*multSig;
+  var simScenarios=[
+    {pct:pMin,label:'Lance minimo viavel',racional:'Menor valor com chance competitiva. Maxima economia de capital, menor probabilidade. Use apenas se o capital for muito limitado.'},
+    {pct:idealPct,label:'Lance ideal (consenso)',racional:'MM6 + '+multSig.toFixed(2)+'xSigma ajustado pelo Slope ('+slope.toFixed(3)+'%/asm). Equilibrio otimo entre probabilidade de contemplacao e desembolso de caixa. Recomendado pelo modelo.'},
+    {pct:pMax,label:'Lance de seguranca maxima',racional:'MM6 + 1xSigma. Cobre historicamente quase todos os lances vencedores. Use quando a contemplacao e urgente e o capital permite.'}
+  ];
+  var simRows=[];
+  simScenarios.forEach(function(sc){
+    var prob=Math.min(99.9,MC_KDE(3000,sc.pct,l6w));
+    var cashPct2=Math.max(0,sc.pct-embutido),expectedAsm=prob>0?Math.ceil(100/prob):999;
+    simRows.push({pct:sc.pct,prob:prob,cashPct:cashPct2,lanceS1:credito*sc.pct/100,lanceS2:credito*cashPct2/100,expectedAsm:expectedAsm,isIdeal:Math.abs(sc.pct-idealPct)<0.01,label:sc.label,racional:sc.racional});
+  });
+  var html='<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px">';
+  html+='<div class="mc"><div class="mc-l">Cotas ativas</div><div class="mc-v" style="font-size:14px">'+(ativas||'—')+'</div><div class="mc-s">ultima assembleia</div></div>';
+  html+='<div class="mc"><div class="mc-l">Cotas aptas</div><div class="mc-v" style="font-size:14px">'+(aptas||'—')+'</div><div class="mc-s">elegiveis para lance</div></div>';
+  html+='<div class="mc"><div class="mc-l">Media contemp./asm</div><div class="mc-v" style="font-size:14px">'+mediaContemplPorAsm.toFixed(1)+'</div><div class="mc-s">por assembleia</div></div>';
+  html+='<div class="mc"><div class="mc-l">% nao contemplado</div><div class="mc-v" style="font-size:14px">'+pctRestante.toFixed(1)+'%</div><div class="mc-s">ainda em disputa</div></div></div>';
+  html+='<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>% Lance livre (S1)</th><th>R$ Lance (S1)</th><th>% Caixa c/embutido (S2)</th><th>R$ Caixa (S2)</th><th>Probabilidade de contemplar</th><th>Asm. esperadas ate contemplar</th><th>Indicacao</th></tr></thead><tbody>';
+  simRows.forEach(function(r){
+    var pc=r.prob>80?'var(--gtx)':r.prob>60?'var(--btx)':'var(--atx)';
+    var rowBg=r.isIdeal?'background:rgba(22,163,74,.08);border-left:4px solid var(--green);':'';
+    var badge=r.isIdeal?'<span class="bd bg2">Ideal</span>':r.prob>=80?'<span class="bd bb">Alta certeza</span>':'<span class="bd ba">Moderado</span>';
+    var asmExpl=r.expectedAsm>=999?'> 100 assembleias':r.expectedAsm===1?'Esta assembleia':r.expectedAsm+' assembleias';
+    var asmNote=r.expectedAsm<=3?'(contemplacao muito provavel ja nesta)':r.expectedAsm<=10?'(provavel nas proximas '+r.expectedAsm+' asm)':'(espera longa — considere aumentar o lance)';
+    html+='<tr style="'+rowBg+'"><td><div style="font-size:'+(r.isIdeal?'16px':'14px')+';font-weight:700;color:var(--btx)">'+p2(r.pct)+'</div><div style="font-size:11px;font-weight:600;color:var(--t2);margin-top:2px">'+r.label+'</div><div class="note" style="margin-top:4px">'+r.racional+'</div></td>';
+    html+='<td style="font-weight:'+(r.isIdeal?'700':'600')+'">'+brl(r.lanceS1)+'</td>';
+    html+='<td style="font-size:'+(r.isIdeal?'15px':'13px')+';font-weight:'+(r.isIdeal?'700':'600')+';color:var(--gtx)">'+p2(r.cashPct)+'</td>';
+    html+='<td style="font-weight:'+(r.isIdeal?'700':'600')+'">'+brl(r.lanceS2)+'</td>';
+    html+='<td><div style="font-size:'+(r.isIdeal?'17px':'14px')+';font-weight:700;color:'+pc+'">'+r.prob.toFixed(1)+'%</div><div class="pb"><div class="pf" style="width:'+r.prob.toFixed(0)+'%;background:'+pc+'"></div></div></td>';
+    html+='<td><div style="font-size:12px;font-weight:600;color:var(--t2)">'+asmExpl+'</div><div class="note">'+asmNote+'<br/>Calculo: 100/'+r.prob.toFixed(1)+'% = '+r.expectedAsm+' asm</div></td>';
+    html+='<td>'+badge+'</td></tr>';
+  });
+  html+='</tbody></table></div>';
+  html+='<div style="margin-top:10px;padding:10px 12px;background:var(--gbg);border:1px solid rgba(22,163,74,.2);border-radius:var(--rs);font-size:11px"><strong style="color:var(--gtx)">De onde vem o lance ideal ('+p2(idealPct)+')?</strong><br/><span style="color:var(--t2)">Formula: MM6 ('+p2(mm6)+') + '+multSig.toFixed(2)+'xSigma ('+p2(sig*multSig)+') = '+p2(idealPct)+'</span><br/><span style="color:var(--t3)">Multiplicador sigma='+multSig.toFixed(2)+' calculado: 0,35 + clamp(slope*2, -0.3, 0.5) onde slope='+slope.toFixed(3)+'%/asm</span><br/><span style="color:var(--t3)">Validado por: EWMA='+p2(ewmaV)+' P75='+p2(p75v)+' IC95: ['+p2(mm6-1.96*(sig||0))+', '+p2(mm6+1.96*(sig||0))+']</span></div>';
+  html+='<div style="font-size:10px;color:var(--t3);margin-top:8px;padding:7px 10px;background:var(--sf2);border-radius:var(--rs)">Simulacao baseada em MM6='+p2(mm6)+' sigma='+p2(sig)+' com '+l6w.length+' lances de referencia. Monte Carlo 5.000 simulacoes. Atualizado automaticamente a cada nova assembleia inserida.</div>';
+  el.innerHTML=html;
+}
+
+// ============================================================
+// SIDEBAR
+// ============================================================
+function renderSidebar(a,n,has,mm6,sig,minR,p75v,ewmaV,kdeM,slope,multSig,l6w,allW,credito,embutido){
+  var sb=document.getElementById('sidebar-content');if(!sb)return;
+  var bestPct=has?mm6+sig*multSig:0,bestProb=has?Math.min(99.9,MC_KDE(4000,bestPct,l6w)):0;
+  var cashBal=Math.max(0,bestPct-embutido);
+  var html='<div style="margin-bottom:10px;display:flex;align-items:center;gap:5px"><span class="sec-t">Analise preditiva — asm '+(n+1)+'</span>'+H('mm6')+'</div>';
+  html+='<div class="brec"><div class="brec-lbl">Recomendacao — Assembleia '+(n+1)+'</div>';
+  if(has){
+    var pColor=bestProb>85?'var(--green)':bestProb>70?'var(--blue)':'var(--amber)';
+    var pTxC=bestProb>85?'var(--gtx)':bestProb>70?'var(--btx)':'var(--atx)';
+    html+='<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px">';
+    html+='<div><div style="font-size:9px;color:var(--gtx);margin-bottom:1px">LANCE LIVRE (S1)</div><div style="font-size:27px;font-weight:600;color:var(--btx);letter-spacing:-1px;line-height:1">'+p2(bestPct)+'</div><div style="font-size:12px;font-weight:600;color:var(--gtx)">'+brl(credito*bestPct/100)+'</div></div>';
+    html+='<div style="width:1px;height:44px;background:var(--bo)"></div>';
+    html+='<div><div style="font-size:9px;color:var(--btx);margin-bottom:1px">CAIXA S2 (c/embutido)</div><div style="font-size:21px;font-weight:600;color:var(--atx);letter-spacing:-1px;line-height:1">'+p2(cashBal)+'</div><div style="font-size:11px;font-weight:600;color:var(--atx)">'+brl(credito*cashBal/100)+'</div></div></div>';
+    html+='<div style="font-size:11px;color:var(--t2)">Probabilidade: <strong style="color:'+pTxC+'">'+bestProb.toFixed(1)+'%</strong></div>';
+    html+='<div class="pb"><div class="pf" style="width:'+bestProb.toFixed(0)+'%;background:'+pColor+'"></div></div>';
+    html+='<div style="font-size:9px;color:var(--t3);margin-top:5px">MM6='+p2(mm6)+' sigma='+p2(sig)+' KDE='+p2(kdeM)+' slope='+(slope>=0?'+':'')+slope.toFixed(3)+' mult=x'+multSig.toFixed(2)+'</div>';
+    var pMin2=mm6-sig*0.5,pIdeal=bestPct,pMax2=mm6+sig;
+    var prMin2=Math.min(99.9,MC_KDE(2000,pMin2,l6w)),prMax2=Math.min(99.9,MC_KDE(2000,pMax2,l6w));
+    html+='<div style="margin-top:10px;padding:9px 11px;background:var(--sf);border-radius:var(--rs);border:1px solid var(--bo)"><div style="font-size:9px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Faixa de trabalho — asm '+(n+1)+'</div>';
+    html+='<div style="display:flex;justify-content:space-between;gap:6px;font-size:11px"><div style="text-align:center"><div style="font-size:10px;color:var(--t3)">Minimo</div><div style="font-weight:700;color:var(--atx)">'+p2(pMin2)+'</div><div style="font-size:10px;color:var(--t3)">'+prMin2.toFixed(0)+'% prob</div></div><div style="text-align:center;background:rgba(22,163,74,.08);border-radius:var(--rs);padding:3px 8px"><div style="font-size:10px;color:var(--gtx)">Ideal</div><div style="font-weight:700;font-size:15px;color:var(--btx)">'+p2(pIdeal)+'</div><div style="font-size:10px;color:var(--btx)">'+bestProb.toFixed(0)+'% prob</div></div><div style="text-align:center"><div style="font-size:10px;color:var(--t3)">Maximo</div><div style="font-weight:700;color:var(--btx)">'+p2(pMax2)+'</div><div style="font-size:10px;color:var(--t3)">'+prMax2.toFixed(0)+'% prob</div></div></div></div>';
+  }else{html+='<div style="font-size:11px;color:var(--t3)">Adicione 2+ assembleias com lances.</div>';}
+  html+='</div><div class="dv"></div>';
+  html+='<div class="mg2">';
+  html+='<div class="mc"><div class="mc-l">MM6 '+H('mm6')+'</div><div class="mc-v">'+(has?p2(mm6):'—')+'</div><div class="mc-s">ult. 6 assembleias</div></div>';
+  html+='<div class="mc"><div class="mc-l">Sigma '+H('sigma')+'</div><div class="mc-v">'+(has?p2(sig):'—')+'</div><div class="mc-s">volatilidade</div></div>';
+  html+='<div class="mc"><div class="mc-l">Min. vencedor '+H('min_vencedor')+'</div><div class="mc-v">'+(has?p2(minR):'—')+'</div><div class="mc-s">piso historico</div></div>';
+  var tDiff=0,tHas=false;
+  if(has&&n>=2){var h2=Math.ceil(n/2);var pw=getWinners(a.slice(0,h2)),cw2=getWinners(a.slice(h2));if(pw.length&&cw2.length){tDiff=mean(cw2)-mean(pw);tHas=true;}}
+  var tCls=tDiff>0.3?'var(--green)':tDiff<-0.3?'var(--red)':'var(--amber)';
+  html+='<div class="mc"><div class="mc-l">Tendencia '+H('tendencia')+'</div><div class="mc-v" style="color:'+(tHas?tCls:'var(--t3)')+'">'+(tHas?(tDiff>=0?'+':'')+p2(tDiff):'—')+'</div><div class="mc-s">variacao recente</div></div>';
+  html+='</div>';
+  html+='<div style="margin-bottom:7px;display:flex;align-items:center;justify-content:space-between"><span class="sec-t">Indicadores preditivos</span></div>';
+  html+='<div class="mg3">';
+  html+='<div class="mc"><div class="mc-l">KDE Mode '+H('kde')+'</div><div class="mc-v">'+(has?p2(kdeM):'—')+'</div><div class="mc-s">moda empirica</div></div>';
+  html+='<div class="mc"><div class="mc-l">P75 '+H('p75')+'</div><div class="mc-v">'+(has?p2(p75v):'—')+'</div><div class="mc-s">percentil 75</div></div>';
+  html+='<div class="mc"><div class="mc-l">EWMA '+H('ewma')+'</div><div class="mc-v">'+(has?p2(ewmaV):'—')+'</div><div class="mc-s">media exp. pond.</div></div>';
+  html+='</div><div class="mg2">';
+  var slopeDir=slope>0.05?'ascendente':slope<-0.05?'descendente':'estavel',slopeCl=slope>0.05?'var(--rtx)':slope<-0.05?'var(--gtx)':'var(--atx)';
+  html+='<div class="mc"><div class="mc-l">Slope '+H('slope')+'</div><div class="mc-v" style="color:'+slopeCl+'">'+(has?(slope>=0?'+':'')+slope.toFixed(3)+'%/asm':'—')+'</div><div class="mc-s">'+slopeDir+'</div></div>';
+  html+='<div class="mc"><div class="mc-l">Mult. sigma</div><div class="mc-v">x'+multSig.toFixed(2)+'</div><div class="mc-s">slope-ajustado</div></div>';
+  html+='</div><div class="dv"></div>';
+  html+='<div style="margin-bottom:7px;display:flex;align-items:center;gap:5px"><span class="sec-t">Monte Carlo 10.000 sim.</span>'+H('monte_carlo')+'</div>';
+  html+='<div class="mc-items">';
+  if(has){
+    var tgts=[{lbl:'Minimo possivel',p:mm6-sig*.5,c:'var(--red)'},{lbl:'Lance balanceado',p:mm6+sig*multSig,c:'var(--amber)'},{lbl:'Protecao +0,5sigma',p:mm6+sig*.5,c:'var(--blue)'},{lbl:'Certeza +1sigma',p:mm6+sig,c:'var(--green)'}];
+    tgts.forEach(function(t){var prob=Math.min(99.9,MC_KDE(4000,t.p,l6w));html+='<div class="mc-it"><div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:10px;color:var(--t2)">'+t.lbl+'</div><div style="font-size:13px;font-weight:600;color:'+t.c+'">'+p2(t.p)+'</div><div class="pb" style="width:110px"><div class="pf" style="width:'+prob.toFixed(0)+'%;background:'+t.c+'"></div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px"><div style="font-size:12px;font-weight:600;color:'+t.c+'">'+prob.toFixed(1)+'%</div><div style="font-size:9px;color:var(--t3)">prob. vitoria</div></div></div>';});
+  }else{html+='<div style="font-size:11px;color:var(--t3)">Minimo 2 assembleias com lances.</div>';}
+  html+='</div><div class="dv"></div>';
+  html+='<div style="margin-bottom:7px"><span class="sec-t">Historico min./media</span></div>';
+  html+='<div class="ch-wrap"><canvas id="histChart"></canvas></div>';
+  html+='<div style="display:flex;gap:12px;margin-bottom:7px;font-size:10px;color:var(--t2)"><span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:3px;background:#2563eb;border-radius:2px;display:inline-block"></span>Min</span><span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:2px;background:#16a34a;border-radius:2px;display:inline-block"></span>Media</span><span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:2px;background:#d97706;border-radius:2px;display:inline-block"></span>EWMA</span></div>';
+  html+='<table class="ht"><thead><tr><th>Asm.</th><th>Data</th><th>Min%</th><th>Med%</th><th>N</th></tr></thead><tbody id="ht-body"></tbody></table>';
+  sb.innerHTML=html;
+}
+
+// ============================================================
+// CHART
+// ============================================================
+function updateChart(hd){
+  if(chartInst){chartInst.destroy();chartInst=null;}
+  var cv=document.getElementById('histChart');if(!cv)return;
+  var allW2=getWinners(getA()),ewmaArr=[];
+  if(allW2.length){var e2=allW2[0],wi=0;hd.forEach(function(h){for(var j=0;j<(h.cnt||0);j++){if(wi<allW2.length){e2=0.3*allW2[wi]+0.7*e2;wi++;}}ewmaArr.push(h.min!==null?e2:null);});}
+  var htb=document.getElementById('ht-body');
+  if(htb){htb.innerHTML='';hd.forEach(function(h){var tr=document.createElement('tr');tr.innerHTML='<td>'+h.num+'</td><td>'+fmtDate(h.date)+'</td><td style="color:var(--blue)">'+(h.min!==null?p2(h.min):'—')+'</td><td>'+(h.avg!==null?p2(h.avg):'—')+'</td><td>'+(h.cnt||'—')+'</td>';htb.appendChild(tr);});}
+  chartInst=new Chart(cv,{type:'line',data:{labels:hd.map(function(h){return 'A'+h.num;}),datasets:[{label:'Min',data:hd.map(function(h){return h.min;}),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',tension:.3,fill:true,pointRadius:3,pointBackgroundColor:'#2563eb',borderWidth:2},{label:'Media',data:hd.map(function(h){return h.avg;}),borderColor:'#16a34a',backgroundColor:'transparent',tension:.3,fill:false,pointRadius:3,pointBackgroundColor:'#16a34a',borderWidth:1.5,borderDash:[4,3]},{label:'EWMA',data:ewmaArr,borderColor:'#d97706',backgroundColor:'transparent',tension:.3,fill:false,pointRadius:2,pointBackgroundColor:'#d97706',borderWidth:1.5,borderDash:[2,4]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:function(ctx){return ctx.dataset.label+': '+(ctx.parsed.y!==null?p2(ctx.parsed.y):'—');}}}},scales:{x:{ticks:{font:{size:10,family:'DM Mono'},color:'#9b9a94',autoSkip:true,maxTicksLimit:12},grid:{color:'rgba(0,0,0,.04)'},border:{display:false}},y:{ticks:{font:{size:10,family:'DM Mono'},color:'#9b9a94',callback:function(v){return v!==null?v.toFixed(1)+'%':''}},grid:{color:'rgba(0,0,0,.04)'},border:{display:false}}}}});
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function calcMesesAntecipados(pBal,l6w,a,prazoRest,antecipParam){
+  if(!l6w||l6w.length<2)return antecipParam||36;
+  var probLance=MC(5000,pBal,l6w)/100;if(probLance<=0)return antecipParam||36;
+  var expectedLanceAsm=Math.min(200,1/probLance);
+  var n=a.length,ativas=0;if(n>0){ativas=parseFloat(a[n-1].ativas)||0;}
+  var probSorteio=ativas>0?1/ativas:0.005;
+  var expectedSorteioAsm=probSorteio>0?Math.min(500,1/probSorteio):prazoRest;
+  var mesesAntecipad=Math.round(expectedSorteioAsm-expectedLanceAsm);
+  return Math.max(1,Math.min(prazoRest,mesesAntecipad));
+}
+function safeParcelaVal(){try{var p=getP(),f=getF(),credito=p.credito||200000;var total=(parseFloat(f.fundo)||0)+(parseFloat(f.admin)||0)+(parseFloat(f.reserva)||0)+(parseFloat(f.seguro)||0)+(parseFloat(f.antecip)||0);var v=total*credito/100;if(v>0){p.parcelaTotal=v;return fmtBRL(v);}return p.parcelaTotal>0?fmtBRL(p.parcelaTotal):'';}catch(e){return '';}}
+function parcelaBlur(input){var raw=parsePt(input.value);if(raw>0){getP().parcelaTotal=raw;input.value=fmtBRL(raw);save();updateAll();}else{input.value=getP().parcelaTotal?fmtBRL(getP().parcelaTotal):'';}}
+
+// ============================================================
+// CDI AUTO-FETCH
+// ============================================================
+function fetchCDI(){
+  var statusEl=document.getElementById('cdi-status'),fieldEl=document.getElementById('cdi-auto-field');
+  if(statusEl)statusEl.textContent='Buscando CDI...';
+  fetch('https://brasilapi.com.br/api/taxas/v1')
+    .then(function(r){return r.json();})
+    .then(function(data){var cdi=null;for(var i=0;i<data.length;i++){if(String(data[i].nome).toUpperCase()==='CDI'){cdi=parseFloat(data[i].valor);break;}}if(cdi&&cdi>0){getP().cdi=cdi;save();if(fieldEl)fieldEl.value=cdi;if(statusEl){statusEl.textContent='CDI atualizado: '+cdi.toFixed(2)+'% a.a. ('+new Date().toLocaleDateString('pt-BR')+')';statusEl.style.color='var(--gtx)';}updateAll();}else{if(statusEl){statusEl.textContent='Nao obtido — insira manualmente';statusEl.style.color='var(--atx)';}}})
+    .catch(function(){if(statusEl){statusEl.textContent='Sem conexao — insira manualmente';statusEl.style.color='var(--atx)';}});
+}
+
+// ============================================================
+// PERSIST / IMPORT / EXPORT / THEME
+// ============================================================
+function save(){try{localStorage.setItem('ciq_v6',JSON.stringify(STATE));showSaveStatus('saved');}catch(e){showSaveStatus('error');}}
+function manualSave(){save();showSaveStatus('manual');}
+function showSaveStatus(type){var dot=document.getElementById('save-dot'),txt=document.getElementById('save-txt'),btn=document.getElementById('save-btn');if(!dot||!txt)return;if(type==='manual'){dot.style.background='var(--green)';txt.textContent='salvo agora';txt.style.color='var(--gtx)';if(btn){btn.style.background='var(--gbg)';btn.innerHTML='&#x2714; Salvo!';}setTimeout(function(){dot.style.background='var(--t3)';txt.textContent='salvo';txt.style.color='var(--t3)';if(btn){btn.style.background='';btn.innerHTML='&#x1F4BE; Salvar';}},2000);}else if(type==='error'){dot.style.background='var(--red)';txt.textContent='erro ao salvar';txt.style.color='var(--rtx)';}else{dot.style.background='var(--green)';setTimeout(function(){dot.style.background='var(--t3)';},800);}}
+function exportData(){var b=new Blob([JSON.stringify(STATE,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='consorcioiq_'+new Date().toISOString().slice(0,10)+'.json';a.click();}
+function importData(){document.getElementById('file-input').click();}
+function handleImport(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.consortia){STATE=d;}else if(d.active!==undefined){STATE=d;}else{alert('Formato invalido.');return;}if(chartInst){chartInst.destroy();chartInst=null;}renderTabs();buildMainHTML();updateAll();save();alert('Importado! '+STATE.consortia.length+' consorcios.');}catch(err){alert('Erro: '+err.message);}};r.readAsText(f);e.target.value='';}
+function toggleTheme(){var d=document.documentElement;if(d.hasAttribute('data-dark'))d.removeAttribute('data-dark');else d.setAttribute('data-dark','');localStorage.setItem('ciq_dark',d.hasAttribute('data-dark')?'1':'0');}
+(function(){if(localStorage.getItem('ciq_dark')==='1')document.documentElement.setAttribute('data-dark','');})();
+
+<script>
+// ============================================================
+// FIREBASE SYNC — Firestore REST API (polling 5s, no SDK)
+// ============================================================
+var _syncTimer=null,_saveTimer=null,_lastCloudTs=0,_connected=false,_lastErrMsg='';
+var SYNC_KEY='ciq_consorcioiq1';
+var DEVICE_ID=(function(){var id=sessionStorage.getItem('ciq_dev');if(!id){id='d'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);sessionStorage.setItem('ciq_dev',id);}return id;})();
+var FB={apiKey:'AIzaSyD20-9UIKKVtimkTxJrK0-XIMA6AMYoxo8',projectId:'consorcio-IQ'};
+
+function fsURL(){return 'https://firestore.googleapis.com/v1/projects/'+FB.projectId+'/databases/(default)/documents/ciq_data/'+SYNC_KEY+'?key='+FB.apiKey;}
+
+function toFS(obj){var f={};Object.keys(obj).forEach(function(k){var v=obj[k];if(typeof v==='string')f[k]={stringValue:v};else if(typeof v==='number')f[k]={integerValue:String(Math.round(v))};else if(typeof v==='boolean')f[k]={booleanValue:v};});return{fields:f};}
+function fromFS(doc){if(!doc||!doc.fields)return null;var o={};Object.keys(doc.fields).forEach(function(k){var f=doc.fields[k];if(f.stringValue!==undefined)o[k]=f.stringValue;else if(f.integerValue!==undefined)o[k]=parseInt(f.integerValue);else if(f.booleanValue!==undefined)o[k]=f.booleanValue;});return o;}
+
+function setSyncStatus(s,msg){
+  _lastErrMsg=s==='err'?msg:'';
+  var dot=document.getElementById('sync-dot'),txt=document.getElementById('sync-txt');
+  if(dot)dot.className='sync-dot '+s;
+  var L={ok:'Sincronizado',syncing:'Salvando...',err:'Erro sync',off:'Offline'};
+  if(txt)txt.textContent=msg||(L[s]||s);
+}
+
+function handleFSError(msg,res){
+  _connected=false;
+  var hint;
+  if(msg.indexOf('PERMISSION_DENIED')!==-1||msg.indexOf('403')!==-1)
+    hint='Regras Firestore bloqueando — publique as regras no console';
+  else if(msg.indexOf('NOT_FOUND')!==-1||msg.indexOf('404')!==-1)
+    hint='Banco nao encontrado — crie o Firestore Database no console';
+  else if(msg.indexOf('Failed to fetch')!==-1||msg.indexOf('NetworkError')!==-1)
+    hint='Sem rede — dados salvos localmente';
+  else hint=msg.slice(0,80);
+  setSyncStatus('err',hint);
+  if(res)res.innerHTML='<span style="color:var(--rtx)">&#x2718; '+hint+'</span>';
+}
+
+function writeToCloud(onDone){
+  var ts=Date.now();
+  fetch(fsURL(),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(toFS({state:JSON.stringify(STATE),updatedAt:ts,deviceId:DEVICE_ID}))})
+    .then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error((e.error&&e.error.message)||String(r.status));});return r.json();})
+    .then(function(){_lastCloudTs=ts;_connected=true;setSyncStatus('ok');if(onDone)onDone(true);})
+    .catch(function(e){handleFSError(e.message||'',null);if(onDone)onDone(false,e.message||'');});
+}
+
+function pollCloud(){
+  fetch(fsURL(),{method:'GET'})
+    .then(function(r){if(r.status===404)return null;if(!r.ok)return r.json().then(function(e){throw new Error((e.error&&e.error.message)||String(r.status));});return r.json();})
+    .then(function(doc){
+      if(!doc)return;
+      var data=fromFS(doc);if(!data)return;
+      if(data.deviceId===DEVICE_ID)return;
+      var rts=data.updatedAt||0;if(rts<=_lastCloudTs)return;
+      _lastCloudTs=rts;
+      try{
+        var rem=JSON.parse(data.state||'null');
+        if(rem&&rem.consortia){
+          STATE=rem;localStorage.setItem('ciq_v6',JSON.stringify(STATE));
+          if(chartInst){chartInst.destroy();chartInst=null;}
+          renderTabs();buildMainHTML();updateAll();
+          var h=new Date().toLocaleTimeString('pt-BR');
+          setSyncStatus('ok','Atualizado ('+h+')');
+          setTimeout(function(){setSyncStatus('ok');},4000);
+        }
+      }catch(ex){}
+    })
+    .catch(function(){/* silent poll error */});
+}
+
+function saveToCloud(){if(!FB.apiKey)return;setSyncStatus('syncing');writeToCloud();}
+function startPolling(){if(_syncTimer)clearInterval(_syncTimer);_syncTimer=setInterval(pollCloud,5000);pollCloud();}
+
+function forceRestoreFromCloud(){
+  // Pull data from Firestore regardless of deviceId/timestamp — used on init if local data is empty
+  fetch(fsURL(),{method:'GET'})
+    .then(function(r){if(r.status===404)return null;if(!r.ok)return null;return r.json();})
+    .then(function(doc){
+      if(!doc)return;
+      var data=fromFS(doc);if(!data||!data.state)return;
+      try{
+        var rem=JSON.parse(data.state);
+        if(rem&&rem.consortia&&rem.consortia.length){
+          STATE=rem;localStorage.setItem('ciq_v6',JSON.stringify(STATE));
+          if(chartInst){chartInst.destroy();chartInst=null;}
+          renderTabs();buildMainHTML();updateAll();
+          _lastCloudTs=data.updatedAt||Date.now();
+          setSyncStatus('ok','Dados restaurados do servidor');
+          setTimeout(function(){setSyncStatus('ok');},4000);
+        }
+      }catch(ex){}
+    })
+    .catch(function(){});
+}
+
+function initFirebase(){
+  if(!FB.apiKey){setSyncStatus('off');return;}
+  setSyncStatus('syncing','Conectando...');
+  // First: try to restore from cloud if local data is empty
+  var localEmpty=!STATE.consortia||!STATE.consortia.length||
+    STATE.consortia.every(function(c){return !c.assemblies||!c.assemblies.length;});
+  if(localEmpty){forceRestoreFromCloud();}
+  // Then: write current state and start polling
+  writeToCloud(function(ok){if(ok)startPolling();});
+}
+
+(function patchSave(){
+  save=function(){try{localStorage.setItem('ciq_v6',JSON.stringify(STATE));showSaveStatus('saved');}catch(e){showSaveStatus('error');}if(_saveTimer)clearTimeout(_saveTimer);_saveTimer=setTimeout(saveToCloud,1200);};
+  manualSave=function(){save();showSaveStatus('manual');saveToCloud();};
+})();
+
+function testFirebaseConnection(){
+  var res=document.getElementById('test-result');
+  if(res)res.innerHTML='<span style="color:var(--atx)">Testando...</span>';
+  writeToCloud(function(ok,errMsg){
+    if(!res)return;
+    if(ok){res.innerHTML='<span style="color:var(--gtx)">&#x2714; Conexao OK! Regras corretas. Sync ativo.</span>';startPolling();}
+    else{handleFSError(errMsg||'',res);}
+  });
+}
+
+function openSyncModal(){
+  var sc=_connected?'var(--gtx)':'var(--rtx)',st=_connected?'Conectado':'Nao conectado';
+  var errB=_lastErrMsg?('<div style="background:var(--rbg);border:1px solid rgba(220,38,38,.2);border-radius:var(--rs);padding:9px 11px;margin-bottom:10px;font-size:11px;color:var(--rtx)"><strong>Erro:</strong> '+_lastErrMsg+'</div>'):'';
+  var ov=document.createElement('div');ov.className='modal-ov';ov.id='sync-modal';
+  ov.innerHTML='<div class="modal-box">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><h2>&#x2601; Sincronizacao entre dispositivos</h2><button class="btn btn-sm" onclick="document.getElementById('sync-modal').remove()">Fechar</button></div>'
+    +'<div style="font-size:11px;font-weight:500;color:'+sc+';margin-bottom:10px">&#x25CF; '+st+' &nbsp;|&nbsp; Chave: <code style="background:var(--sf2);padding:1px 6px;border-radius:3px">'+SYNC_KEY+'</code></div>'
+    +errB
+    +'<div style="background:var(--abg);border:1px solid rgba(217,119,6,.2);border-radius:var(--rs);padding:11px 13px;margin-bottom:12px;font-size:11px;color:var(--atx)">'
+    +'<strong>&#x26A0; Passo obrigatorio — Regras do Firestore:</strong><br/>'
+    +'<a href="https://console.firebase.google.com" target="_blank" style="color:var(--atx)">console.firebase.google.com</a> &rarr; consorcio-IQ &rarr; Firestore Database &rarr; Regras &rarr; cole e publique:<br/>'
+    +'<code style="display:block;background:rgba(0,0,0,.07);padding:8px;border-radius:4px;margin-top:6px;font-size:10px;line-height:1.7;white-space:pre;color:inherit">'
+    +"rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /ciq_data/{id} {
+      allow read, write: if true;
+    }
+  }
+}"
+    +'</code></div>'
+    +'<div style="font-size:11px;color:var(--t2);padding:9px 11px;background:var(--sf2);border-radius:var(--rs);margin-bottom:12px">'
+    +'<strong>Verificar se Firestore foi criado:</strong> No Firebase Console &rarr; Firestore Database &rarr; deve mostrar a aba "Dados". Se pedir para criar, use <strong>Modo producao</strong>, regiao <strong>southamerica-east1</strong>.'
+    +'</div>'
+    +'<div style="display:flex;justify-content:space-between;align-items:center">'
+    +'<button class="btn" style="background:var(--gbg);color:var(--gtx);border-color:var(--green)" onclick="testFirebaseConnection()">&#x25B6; Testar conexao</button>'
+    +'<button class="btn btn-p" onclick="document.getElementById('sync-modal').remove();if(_syncTimer)clearInterval(_syncTimer);_connected=false;initFirebase()">Reconectar</button>'
+    +'</div>'
+    +'<div id="test-result" style="margin-top:10px;font-size:11px"></div>'
+    +'</div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+}
+
+var _installPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_installPrompt=e;var b=document.getElementById('install-btn');if(b)b.style.display='inline-flex';});
+function installPWA(){if(!_installPrompt)return;_installPrompt.prompt();_installPrompt.userChoice.then(function(r){if(r.outcome==='accepted'){var b=document.getElementById('install-btn');if(b)b.style.display='none';}_installPrompt=null;});}
+
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').then(function(r){console.log('SW:',r.scope);}).catch(function(e){console.warn('SW err:',e);});});}
+
+window.addEventListener('DOMContentLoaded',function(){setTimeout(initFirebase,800);});
+</script>
+</body>
+</html>
